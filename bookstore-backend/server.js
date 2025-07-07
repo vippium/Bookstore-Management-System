@@ -8,10 +8,10 @@ dotenv.config();
 connectDB();
 
 const app = express();
-
-// Middlewares
 app.use(cors());
 app.use(express.json());
+
+// Middlewares
 const { protect } = require('./middleware/authMiddleware');
 
 
@@ -25,6 +25,7 @@ app.get('/api/secret', protect, (req, res) => {
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/books', require('./routes/bookRoutes'));
+app.use('/api/orders', require('./routes/orderRoutes'));
 
 
 

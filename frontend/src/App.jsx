@@ -6,6 +6,10 @@ import Navbar from './components/Navbar';
 import Admin from './pages/Admin';
 import { useContext } from 'react';
 import AuthContext from './context/AuthContext';
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import MyOrders from './pages/MyOrders';
+import AdminOrders from './pages/AdminOrders';
 
 
 function App() {
@@ -20,7 +24,12 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/admin" element={isLoggedIn && user?.role === 'admin' ? (<Admin />) : (<Navigate to="/login" />)}/>
+        <Route path="/admin" element={isLoggedIn && user?.role === 'admin' ? (<Admin />) : (<Navigate     to="/login" />)}/>
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/admin/orders" element={isLoggedIn && user?.role === 'admin' ? (<AdminOrders />) : (
+        <Navigate to="/login" />)}/>
       </Routes>
     </>
   );

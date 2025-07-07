@@ -21,8 +21,13 @@ export default function Navbar() {
         {isLoggedIn ? (
           <>
             {user.role === 'admin' && (
-              <Link to="/admin" className="text-gray-700 hover:text-blue-600">Admin</Link>
+              <>
+                <Link to="/admin" className="text-gray-700 hover:text-blue-600">Admin</Link>
+                <Link to="/admin/orders" className="text-gray-700 hover:text-blue-600">Admin Orders</Link>
+              </>
             )}
+            <Link to="/cart" className="text-gray-700 hover:text-blue-600">Cart</Link>
+            <Link to="/my-orders" className="text-gray-700 hover:text-blue-600">My Orders</Link>
             <button
               onClick={handleLogout}
               className="text-red-500 hover:underline"
