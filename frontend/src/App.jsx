@@ -27,7 +27,7 @@ function App() {
         <Route path="/admin" element={isLoggedIn && user?.role === 'admin' ? (<Admin />) : (<Navigate     to="/login" />)}/>
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/my-orders" element={isLoggedIn && user?.role === 'customer'? <MyOrders />: <Navigate to="/" />}/>
         <Route path="/admin/orders" element={isLoggedIn && user?.role === 'admin' ? (<AdminOrders />) : (
         <Navigate to="/login" />)}/>
       </Routes>

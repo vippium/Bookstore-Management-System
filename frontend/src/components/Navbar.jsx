@@ -1,6 +1,6 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
-import AuthContext from '../context/AuthContext';
+import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
 
 export default function Navbar() {
   const { isLoggedIn, user, logout } = useContext(AuthContext);
@@ -8,7 +8,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
@@ -20,14 +20,27 @@ export default function Navbar() {
       <div className="space-x-4">
         {isLoggedIn ? (
           <>
-            {user.role === 'admin' && (
+            {user.role === "admin" && (
               <>
-                <Link to="/admin" className="text-gray-700 hover:text-blue-600">Admin</Link>
-                <Link to="/admin/orders" className="text-gray-700 hover:text-blue-600">Admin Orders</Link>
+                <Link to="/admin" className="text-gray-700 hover:text-blue-600">
+                  Admin Tools
+                </Link>
               </>
             )}
-            <Link to="/cart" className="text-gray-700 hover:text-blue-600">Cart</Link>
-            <Link to="/my-orders" className="text-gray-700 hover:text-blue-600">My Orders</Link>
+
+            <Link to="/cart" className="text-gray-700 hover:text-blue-600">
+              Cart
+            </Link>
+
+            {user.role !== "admin" && (
+              <Link
+                to="/my-orders"
+                className="text-gray-700 hover:text-blue-600"
+              >
+                My Orders
+              </Link>
+            )}
+
             <button
               onClick={handleLogout}
               className="text-red-500 hover:underline"
@@ -37,8 +50,12 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <Link to="/login" className="text-gray-700 hover:text-blue-600">Login</Link>
-            <Link to="/register" className="text-gray-700 hover:text-blue-600">Register</Link>
+            <Link to="/login" className="text-gray-700 hover:text-blue-600">
+              Login
+            </Link>
+            <Link to="/register" className="text-gray-700 hover:text-blue-600">
+              Register
+            </Link>
           </>
         )}
       </div>
