@@ -1,8 +1,8 @@
-<h1 📚 Bookstore Management System – MERN Stack> </h1>
+<h1> 📚 Bookstore Management System – MERN Stack </h1>
 
 A full-stack web application that allows a bookstore owner to manage their books, customers, and orders online. It includes role-based authentication for customers and admins.
 
-<h2 🚀 Tech Stack> </h2>
+<h2> 🚀 Tech Stack </h2>
 
 <b>Frontend</b>
 
