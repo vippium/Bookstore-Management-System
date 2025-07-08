@@ -20,15 +20,29 @@ export const CartProvider = ({ children }) => {
     setCart([]);
   };
 
+  // ✅ FIXED: updateQuantity now inside and uses setCart
+  const updateQuantity = (id, quantity) => {
+    setCart((prev) =>
+      prev.map((item) => {
+        if (item._id === id) {
+          const limitedQty = Math.max(1, Math.min(quantity, item.stock || 99)); // max at stock
+          return { ...item, quantity: limitedQty };
+        }
+        return item;
+      })
+    );
+  };
+
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, clearCart, total }}
+      value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, total }}
     >
       {children}
     </CartContext.Provider>
   );
 };
+
 
 export default CartContext;
