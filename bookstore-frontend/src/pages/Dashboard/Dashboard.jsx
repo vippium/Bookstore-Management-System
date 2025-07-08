@@ -89,7 +89,7 @@ export default function UserInfo() {
           <h2 className="text-xl font-semibold text-blue-700">Order Summary</h2>
         </div>
         <p className="text-sm text-gray-500">
-          📊 Summary stats will be available here.
+          📊 Summary stats will be available here after you start ordering items.
         </p>
       </div>
     </div>

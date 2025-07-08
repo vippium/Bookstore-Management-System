@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "./context/AuthContext";
 
@@ -30,9 +35,10 @@ export default function App() {
 
         {/* Protected Routes (any authenticated user) */}
         <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/dashboard" element={user?.role === "admin" ? <Navigate to="/admin" /> : <Dashboard />} />
         </Route>
 
         {/* Admin Only */}

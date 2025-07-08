@@ -28,7 +28,7 @@ export default function BookManager() {
         </thead>
         <tbody>
           {books.map((book) => (
-            <tr key={book._id} className="border-t hover:bg-gray-50">
+            <tr key={book._id} className="border-t-4 hover:bg-gray-50 ">
               <td className="p-2">{book.title}</td>
               <td className="p-2">{book.author}</td>
               <td className="p-2">₹{book.price}</td>

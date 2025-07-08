@@ -80,7 +80,7 @@ export default function AdminDashboard() {
           <h2 className="text-xl font-semibold text-blue-700">Manage Orders</h2>
         </div>
         <p className="text-sm text-gray-500">
-          📦 Order management interface will be added here.
+          📦 Order management interface will be added here soon.
         </p>
       </div>
 
@@ -91,7 +91,7 @@ export default function AdminDashboard() {
           <h2 className="text-xl font-semibold text-blue-700">Site Analytics</h2>
         </div>
         <p className="text-sm text-gray-500">
-          📊 Summary stats will be available here.
+          📊 Summary stats will be available soon.
         </p>
       </div>
 

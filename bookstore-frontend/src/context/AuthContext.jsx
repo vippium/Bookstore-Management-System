@@ -1,33 +1,62 @@
 import { createContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
+import api from "../services/axios";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);         // decoded JWT info
+  const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true);   // useful for protected routes
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        setUser(decoded);
-        setIsLoggedIn(true);
-      } catch (err) {
-        localStorage.removeItem("token");
-      }
+      api.get("/auth/me")
+        .then((res) => {
+          setUser(res.data.user);
+          setIsLoggedIn(true);
+        })
+        .catch(() => {
+          setUser(null);
+          setIsLoggedIn(false);
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
-  const login = (token) => {
+  const login = async (email, password) => {
+    try {
+      const res = await api.post("/auth/login", { email, password });
+      const { token } = res.data;
+      localStorage.setItem("token", token);
+      const decoded = jwtDecode(token);
+      setUser(decoded);
+      setIsLoggedIn(true);
+      return true;
+    } catch (err) {
+      console.error("Login error:", err);
+      return false;
+    }
+  };
+
+  const register = async (name, email, password) => {
+  try {
+    const res = await api.post("/auth/register", { name, email, password });
+    const { token } = res.data;
     localStorage.setItem("token", token);
     const decoded = jwtDecode(token);
     setUser(decoded);
     setIsLoggedIn(true);
-  };
+    return true;
+  } catch (err) {
+    console.error("🔴 Register Error:", err.response?.data || err.message);
+    return false;
+  }
+};
+
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -36,7 +65,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{ user, isLoggedIn, login, logout, loading, register}}
+    >
       {children}
     </AuthContext.Provider>
   );
