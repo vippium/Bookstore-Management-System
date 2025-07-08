@@ -5,6 +5,9 @@ export default {
       animation: {
         "fade-in-up": "fadeInUp 0.6s ease-out",
         "zoom-in": "zoomIn 0.5s ease-out forwards",
+        "scale-in": "scaleIn 0.3s ease-out",
+        "fade-out": "fadeOut 0.3s ease-in forwards",
+        "fade-in": "fadeIn 0.3s ease-out forwards",
       },
       keyframes: {
         fadeInUp: {
@@ -14,6 +17,18 @@ export default {
         zoomIn: {
           "0%": { opacity: 0, transform: "scale(0.8)" },
           "100%": { opacity: 1, transform: "scale(1)" },
+        },
+        scaleIn: {
+          "0%": { transform: "scale(0.5)", opacity: "0" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
+        fadeOut: {
+          "0%": { opacity: 1 },
+          "100%": { opacity: 0 },
+        },
+        fadeIn: {
+          "0%": { opacity: 0 },
+          "100%": { opacity: 1 },
         },
       },
     },
