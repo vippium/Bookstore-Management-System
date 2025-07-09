@@ -1,25 +1,19 @@
 import { useContext } from "react";
 import AuthContext from "../../context/AuthContext";
-import {
-  UserCircle,
-  ListOrdered,
-  BarChartBig,
-  ShieldCheck,
-  User2,
-} from "lucide-react";
+import {UserCircle,ListOrdered,BarChartBig,ShieldCheck,User2,} from "lucide-react";
 
-export default function UserInfo() {
+export default function Dashboard() {
   const { user } = useContext(AuthContext);
 
-  const getRoleLabel = (role) => {
-    if (role === "admin") return "Administrator";
-    return "Customer";
-  };
-
+ 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-6 transition-all animate-fade-in">
+
+
       {/* User Info Card */}
       <div className="relative bg-white border border-blue-100 rounded-3xl shadow-md p-6 hover:shadow-xl hover:ring-1 hover:ring-blue-500 transition-all hover:scale-x-105 duration-300">
+
+
         {/* Role Badge */}
         <span
           className={`absolute top-4 right-4 text-xs px-3 py-1 rounded-full font-medium shadow-sm flex items-center gap-1

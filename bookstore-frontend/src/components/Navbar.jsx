@@ -2,15 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import CartContext from "../context/CartContext";
-import {
-  ShoppingCart,
-  LogOut,
-  LogIn,
-  LayoutDashboard,
-  User2,
-  ChevronDown,
-  UserPlus
-} from "lucide-react";
+import {ShoppingCart,LogOut,LogIn,LayoutDashboard,User2,ChevronDown,UserRoundPlus} from "lucide-react";
 
 export default function Navbar() {
   const { isLoggedIn, logout, user } = useContext(AuthContext);
@@ -19,7 +11,7 @@ export default function Navbar() {
   const dropdownRef = useRef(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0); // ✅ accurate item quantity count
+  const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   const handleLogout = () => {
     logout();
@@ -47,8 +39,8 @@ export default function Navbar() {
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-6xl mx-auto flex items-center justify-between p-4">
-        <NavLink to="/" className="text-xl font-bold text-blue-700">
-          📚 Bookstore
+        <NavLink to="/" className="text-2xl font-bold text-blue-700">
+          📚 Vipin's Bookstore
         </NavLink>
 
         <div className="flex items-center gap-6 text-sm relative">
@@ -117,7 +109,7 @@ export default function Navbar() {
                 Login
               </NavLink>
               <NavLink to="/register" className={getActiveClass}>
-                <UserPlus className="w-4 h-4" />
+                <UserRoundPlus className="w-4 h-4" />
                 Register
               </NavLink>
             </>

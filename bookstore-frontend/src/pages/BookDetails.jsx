@@ -9,6 +9,8 @@ import "tippy.js/dist/tippy.css";
 import "tippy.js/animations/scale.css";
 import toast from "react-hot-toast";
 import Breadcrumb from "../components/Breadcrumb";
+import { Rating } from "react-simple-star-rating";
+
 
 export default function BookDetails() {
   const { id } = useParams();
@@ -53,9 +55,9 @@ export default function BookDetails() {
     <>
       {/* Breadcrumb */}
       <Breadcrumb current={"Book Info"} icon={<Book className="w-6 h-6" />} />
-      
-        {/* Book Cover */}
-        <div className="max-w-5xl mx-auto p-6 flex flex-col md:flex-row gap-8 animate-zoom-in">
+
+      {/* Book Cover */}
+      <div className="max-w-5xl mx-auto p-6 flex flex-col md:flex-row gap-8 animate-zoom-in">
         <div className="md:w-1/2">
           <img
             src={book.imageUrl}
@@ -73,6 +75,8 @@ export default function BookDetails() {
               <span className="text-2xl font-bold">{book.title}</span>
             </div>
 
+
+
             {/* Static Rating */}
             <div className="flex items-center gap-1 mt-1 text-sm text-yellow-600">
               <span>★</span>
@@ -80,6 +84,7 @@ export default function BookDetails() {
               <span className="text-gray-500 ml-1">(52 reviews)</span>
             </div>
 
+            
             <p className="text-gray-700 text-sm mt-3 mb-1">
               <span className="font-medium">Author:</span> {book.author}
             </p>
@@ -153,19 +158,16 @@ export default function BookDetails() {
               theme="light-border"
               placement="top"
             >
-              <div>
-                <button
-                  onClick={() => user && handleAddToCart()}
-                  disabled={book.stock < 1 || !user}
-                  className={`px-5 py-2 rounded-full font-semibold transition transform duration-300 ${
-                    !user || book.stock < 1
-                      ? "bg-gray-300 text-white cursor-not-allowed"
-                      : `bg-blue-600 text-white hover:bg-blue-700 ${animateCart ? "scale-110" : ""}`
+              <button
+                onClick={() => user && handleAddToCart()}
+                disabled={book.stock < 1 || !user}
+                className={`px-5 py-2 rounded-full font-semibold transition transform duration-300 ${!user || book.stock < 1
+                  ? "bg-gray-300 text-white cursor-not-allowed"
+                  : `bg-blue-600 text-white hover:bg-blue-700 ${animateCart ? "scale-110" : ""}`
                   }`}
-                >
-                  Add to Cart
-                </button>
-              </div>
+              >
+                Add to Cart
+              </button>
             </Tippy>
 
             {/* Buy Now */}
@@ -176,19 +178,16 @@ export default function BookDetails() {
               theme="light-border"
               placement="top"
             >
-              <div>
-                <button
-                  onClick={() => user && navigate("/checkout", { state: { book, quantity } })}
-                  disabled={book.stock < 1 || !user}
-                  className={`px-5 py-2 rounded-full font-semibold transition ${
-                    !user || book.stock < 1
-                      ? "bg-gray-100 text-gray-400 border border-gray-300 cursor-not-allowed"
-                      : "border border-blue-600 text-blue-600 hover:bg-blue-50"
+              <button
+                onClick={() => user && navigate("/checkout", { state: { book, quantity } })}
+                disabled={book.stock < 1 || !user}
+                className={`px-5 py-2 rounded-full font-semibold transition ${!user || book.stock < 1
+                  ? "bg-gray-100 text-gray-400 border border-gray-300 cursor-not-allowed"
+                  : "border border-blue-600 text-blue-600 hover:bg-blue-50"
                   }`}
-                >
-                  Buy Now
-                </button>
-              </div>
+              >
+                Buy Now
+              </button>
             </Tippy>
           </div>
         </div>

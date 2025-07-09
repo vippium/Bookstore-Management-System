@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import api from "../services/axios";
 import AuthContext from "../context/AuthContext";
 import { Link } from "react-router-dom";
@@ -11,9 +11,7 @@ export default function Home() {
   const [searchInput, setSearchInput] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const booksPerPage = 12;
-  const { isLoggedIn } = useContext(AuthContext);
   const [selectedGenre, setSelectedGenre] = useState("All Genres");
-  const [isFocused, setIsFocused] = useState(false);
 
   // Fetch books
   useEffect(() => {

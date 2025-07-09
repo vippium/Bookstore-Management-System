@@ -10,22 +10,24 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      api.get("/auth/me")
-        .then((res) => {
-          setUser(res.data.user);
-          setIsLoggedIn(true);
-        })
-        .catch(() => {
-          setUser(null);
-          setIsLoggedIn(false);
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
-  }, []);
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    api.get("/auth/me")
+      .then((res) => {
+        setUser(res.data.user);
+        setIsLoggedIn(true);
+      })
+      .catch(() => {
+        setUser(null);
+        setIsLoggedIn(false);
+      })
+      .finally(() => setLoading(false));
+  } else {
+    setLoading(false);
+  }
+}, []);
+
 
   const login = async (email, password) => {
     try {

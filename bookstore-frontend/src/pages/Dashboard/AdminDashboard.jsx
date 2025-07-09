@@ -1,14 +1,7 @@
 import { useContext } from "react";
 import AuthContext from "../../context/AuthContext";
 import BookManager from "../../components/BookManager";
-import {
-  UserCircle,
-  ShieldCheck,
-  User2,
-  ListOrdered,
-  BarChartBig,
-  Book,
-} from "lucide-react";
+import { UserCircle, ShieldCheck, User2, ListOrdered, BarChartBig, Book, CirclePlus } from "lucide-react";
 
 export default function AdminDashboard() {
   const { user } = useContext(AuthContext);
@@ -21,10 +14,9 @@ export default function AdminDashboard() {
         {/* Role Badge */}
         <span
           className={`absolute top-4 right-4 text-xs px-3 py-1 rounded-full font-medium shadow-sm flex items-center gap-1
-            ${
-              user?.role === "admin"
-                ? "bg-green-100 text-green-700"
-                : "bg-blue-100 text-blue-700"
+            ${user?.role === "admin"
+              ? "bg-green-100 text-green-700"
+              : "bg-blue-100 text-blue-700"
             }`}
         >
           {user?.role === "admin" ? (
@@ -65,16 +57,33 @@ export default function AdminDashboard() {
       </div>
 
       {/* Book Manager Card */}
-      <div className="bg-white border border-blue-100 rounded-2xl shadow-md p-6 hover:scale-105 duration-300 hover:shadow-xl hover:ring-1 hover:ring-blue-500">
-        <div className="flex items-center gap-3 mb-4">
-          <Book className="w-6 h-6 text-blue-600" />
-          <h2 className="text-xl font-semibold text-blue-700">Manage Books</h2>
+      <div className="bg-white border border-blue-100 rounded-3xl shadow-md p-6 hover:scale-105 duration-300 hover:shadow-xl hover:ring-1 hover:ring-blue-500">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <Book className="w-6 h-6 text-blue-600" />
+            <h2 className="text-xl font-semibold text-blue-700">Manage Books</h2>
+          </div>
+          
+
+          <button
+            onClick={() => window.location.href = "/admin/books/new"}
+            className="bg-blue-500 text-white text-sm px-4 py-1.5 rounded-full hover:bg-blue-700 transition font-medium flex items-center gap-2">
+            <CirclePlus className="w-4 h-4" />
+            Add Book
+          </button>
+
         </div>
-        <BookManager />
+
+        {/* Scrollable Book List */}
+        <div className="max-h-[450px] overflow-y-auto pr-1 custom-scrollbar">
+          <BookManager />
+        </div>
       </div>
 
+
+
       {/* Manage Orders */}
-      <div className="bg-white border border-blue-100 rounded-2xl shadow-md p-6 hover:scale-105 duration-300 hover:shadow-xl hover:ring-1 hover:ring-blue-500">
+      <div className="bg-white border border-blue-100 rounded-3xl shadow-md p-6 hover:scale-105 duration-300 hover:shadow-xl hover:ring-1 hover:ring-blue-500">
         <div className="flex items-center gap-3 mb-4">
           <ListOrdered className="w-6 h-6 text-blue-600" />
           <h2 className="text-xl font-semibold text-blue-700">Manage Orders</h2>
@@ -85,7 +94,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Analytics */}
-      <div className="bg-white border border-blue-100 rounded-2xl shadow-md p-6 hover:scale-105 duration-300 hover:shadow-xl hover:ring-1 hover:ring-blue-500">
+      <div className="bg-white border border-blue-100 rounded-3xl shadow-md p-6 hover:scale-105 duration-300 hover:shadow-xl hover:ring-1 hover:ring-blue-500">
         <div className="flex items-center gap-3 mb-4">
           <BarChartBig className="w-6 h-6 text-blue-600" />
           <h2 className="text-xl font-semibold text-blue-700">Site Analytics</h2>

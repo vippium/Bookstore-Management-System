@@ -1,12 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import { useContext } from "react";
-import AuthContext from "./context/AuthContext";
-
+import {BrowserRouter as Router,Routes,Route,Navigate,} from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -16,12 +8,14 @@ import BookDetails from "./pages/BookDetails";
 import Checkout from "./pages/Checkout";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import AdminDashboard from "./pages/Dashboard/AdminDashboard";
+import EditBook from "./pages/EditBook";
+import AddBook from "./pages/AddBook";
+
 
 // New unified route guard
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
-  const { user } = useContext(AuthContext);
 
   return (
     <Router>
@@ -36,7 +30,6 @@ export default function App() {
         {/* Protected Routes (any authenticated user) */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
         </Route>
@@ -44,6 +37,9 @@ export default function App() {
         {/* Admin Only */}
         <Route element={<ProtectedRoute requiredRole="admin" />}>
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/books/:id/edit" element={<EditBook />} />
+          <Route path="/admin/books/new" element={<AddBook />} />
+
         </Route>
       </Routes>
     </Router>
