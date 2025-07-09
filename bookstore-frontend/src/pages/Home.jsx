@@ -3,7 +3,7 @@ import api from "../services/axios";
 import AuthContext from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import { Listbox } from "@headlessui/react";
-import { BookOpen, Search, ChevronDown } from "lucide-react";
+import { LibraryBig, Search, ChevronDown } from "lucide-react";
 
 export default function Home() {
   const [books, setBooks] = useState([]);
@@ -60,7 +60,7 @@ export default function Home() {
   return (
     <div className="px-4 md:px-8 py-6 max-w-7xl mx-auto">
       <div className="flex items-center gap-2 text-blue-700 mb-6 text-2xl font-bold">
-        <BookOpen className="w-6 h-6" />
+        <LibraryBig className="w-7 h-7" />
         <span>Books Available</span>
       </div>
 

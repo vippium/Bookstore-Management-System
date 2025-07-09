@@ -2,6 +2,7 @@ import { useContext, useRef, useState, useEffect } from "react";
 import CartContext from "../context/CartContext";
 import { Link } from "react-router-dom";
 import { ShoppingCart, Trash2 } from "lucide-react";
+import Breadcrumb from "../components/Breadcrumb";
 
 export default function Cart() {
   const { cart, updateQuantity, removeFromCart } = useContext(CartContext);
@@ -25,11 +26,9 @@ export default function Cart() {
   useEffect(() => window.scrollTo({ top: 0, behavior: "smooth" }), []);
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <div className="flex items-center gap-2 text-2xl font-bold text-blue-700 mb-6">
-        <ShoppingCart className="w-6 h-6" />
-        <span>Your Cart</span>
-      </div>
+    <div className="max-w-5xl mx-auto p-6 animate-fade-in">
+      <Breadcrumb current="Your Cart" icon={<ShoppingCart className="w-6 h-6 mr-1" />} />
+
 
       {cart.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center text-gray-500 py-20 animate-zoom-in">
@@ -150,7 +149,7 @@ export default function Cart() {
             );
           })}
 
-          <div className="text-right text-2xl font-semibold text-blue-800 mt-6">
+          <div className="text-right text-2xl font-bold text-blue-800 mt-6">
             Total: ₹{total.toFixed(2)}
           </div>
 

@@ -32,3 +32,21 @@
     100% { transform: translateX(0); }
   }
 }
+
+/* Light Mode Tooltip */
+.tippy-box {
+  border-radius: 9999px !important;
+  padding-inline: 0.75rem !important;
+  font-size: 0.75rem;
+  background-color: white;
+  color: #1f2937;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #e5e7eb;
+}
+
+/* Dark Mode Tooltip */
+.dark .tippy-box {
+  background-color: #1f2937 !important; 
+  color: #f9fafb !important;            
+  border-color: #374151;                 
+}
