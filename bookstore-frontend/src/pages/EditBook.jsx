@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../services/axios";
 import toast from "react-hot-toast";
 import BookForm from "../components/BookForm";
+import { PencilLine } from "lucide-react";
 
 export default function EditBook() {
   const { id } = useParams();
@@ -22,7 +23,7 @@ export default function EditBook() {
       await api.put(`/books/${id}`, updatedData);
       toast.success("Book updated!");
       navigate("/admin");
-    } catch (err) {
+    } catch {
       toast.error("Update failed");
     } finally {
       setLoading(false);
@@ -32,8 +33,13 @@ export default function EditBook() {
   if (!initialData) return <div className="text-center py-10">Loading...</div>;
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <h2 className="text-2xl font-bold text-blue-700 mb-4">Edit Book</h2>
+    <div className="max-w-2xl mx-auto p-6">
+      {/* Icon + Title */}
+      <div className="flex items-center gap-2 mb-4 text-yellow-600">
+        <PencilLine className="w-6 h-6" />
+        <h2 className="text-lg font-bold">Edit Book</h2>
+      </div>
+
       <BookForm initialData={initialData} onSubmit={handleUpdate} loading={loading} />
     </div>
   );

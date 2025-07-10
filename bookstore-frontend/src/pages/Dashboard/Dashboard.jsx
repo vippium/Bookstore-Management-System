@@ -1,11 +1,12 @@
 import { useContext } from "react";
 import AuthContext from "../../context/AuthContext";
-import {UserCircle,ListOrdered,BarChartBig,ShieldCheck,User2,} from "lucide-react";
+import { UserCircle, ListOrdered, BarChartBig, ShieldCheck, User2, } from "lucide-react";
+import MyOrders from "./MyOrders";
 
 export default function Dashboard() {
   const { user } = useContext(AuthContext);
 
- 
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-6 transition-all animate-fade-in">
 
@@ -17,11 +18,10 @@ export default function Dashboard() {
         {/* Role Badge */}
         <span
           className={`absolute top-4 right-4 text-xs px-3 py-1 rounded-full font-medium shadow-sm flex items-center gap-1
-    ${
-      user?.role === "admin"
-        ? "bg-green-100 text-green-700"
-        : "bg-blue-100 text-blue-700"
-    }
+    ${user?.role === "admin"
+              ? "bg-green-100 text-green-700"
+              : "bg-blue-100 text-blue-700"
+            }
   `}
         >
           {user?.role === "admin" ? (
@@ -71,9 +71,7 @@ export default function Dashboard() {
           <ListOrdered className="w-6 h-6 text-blue-600" />
           <h2 className="text-xl font-semibold text-blue-700">My Orders</h2>
         </div>
-        <p className="text-sm text-gray-500">
-          🛒 Orders will be listed here soon...
-        </p>
+        <MyOrders />
       </div>
 
       {/* Order Summary Card */}

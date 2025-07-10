@@ -29,9 +29,13 @@ export default function BookDetails() {
   }, [id]);
 
   const handleQuantity = (type) => {
-    if (type === "inc" && quantity < book.stock) setQuantity((q) => q + 1);
-    if (type === "dec" && quantity > 1) setQuantity((q) => q - 1);
+    setQuantity((prev) => {
+      if (type === "inc" && prev < book.stock) return prev + 1;
+      if (type === "dec" && prev > 1) return prev - 1;
+      return prev;
+    });
   };
+
 
   const handleAddToCart = () => {
     addToCart({ ...book, quantity });
@@ -84,7 +88,7 @@ export default function BookDetails() {
               <span className="text-gray-500 ml-1">(52 reviews)</span>
             </div>
 
-            
+
             <p className="text-gray-700 text-sm mt-3 mb-1">
               <span className="font-medium">Author:</span> {book.author}
             </p>

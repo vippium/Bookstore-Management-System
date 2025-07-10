@@ -6,11 +6,29 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
   const addToCart = (book) => {
-    const exists = cart.find((item) => item._id === book._id);
-    if (!exists) {
-      setCart([...cart, { ...book, quantity: 1 }]);
-    }
-  };
+  const exists = cart.find((item) => item._id === book._id);
+  if (exists) {
+    // 🔁 Increase quantity if already in cart
+    setCart((prev) =>
+      prev.map((item) =>
+        item._id === book._id
+          ? {
+              ...item,
+              quantity: Math.min(
+                item.quantity + (book.quantity || 1),
+                item.stock || 99
+              ),
+            }
+          : item
+      )
+    );
+  } else {
+    // 🆕 Add new book with provided quantity
+    setCart([...cart, { ...book, quantity: book.quantity || 1 }]);
+  }
+};
+
+
 
   const removeFromCart = (id) => {
     setCart(cart.filter((item) => item._id !== id));

@@ -2,9 +2,14 @@ import { useContext } from "react";
 import AuthContext from "../../context/AuthContext";
 import BookManager from "../../components/BookManager";
 import { UserCircle, ShieldCheck, User2, ListOrdered, BarChartBig, Book, CirclePlus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import AdminOrderPanel from "../../components/AdminOrderPanel";
+
 
 export default function AdminDashboard() {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-6 animate-fade-in">
@@ -66,7 +71,7 @@ export default function AdminDashboard() {
           
 
           <button
-            onClick={() => window.location.href = "/admin/books/new"}
+            onClick={() => navigate("/admin/books/new")}
             className="bg-blue-500 text-white text-sm px-4 py-1.5 rounded-full hover:bg-blue-700 transition font-medium flex items-center gap-2">
             <CirclePlus className="w-4 h-4" />
             Add Book
@@ -88,9 +93,7 @@ export default function AdminDashboard() {
           <ListOrdered className="w-6 h-6 text-blue-600" />
           <h2 className="text-xl font-semibold text-blue-700">Manage Orders</h2>
         </div>
-        <p className="text-sm text-gray-500">
-          📦 Order management interface will be added here soon.
-        </p>
+          <AdminOrderPanel />
       </div>
 
       {/* Analytics */}

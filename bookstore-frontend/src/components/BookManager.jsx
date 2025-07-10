@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
 import api from "../services/axios";
-import {
-  Pencil,
-  Trash2,
-  Loader,
-  ChevronUp,
-  ChevronDown,
-  ChevronsUpDown,
-} from "lucide-react";
+import { Pencil, Trash2, Loader, ChevronUp, ChevronDown, ChevronsUpDown, Undo2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import ConfirmModal from "./ConfirmModal";
+
 
 export default function BookManager() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const [lastDeleted, setLastDeleted] = useState(null);
 
-  const [sortBy, setSortBy] = useState("default"); // "title" | "genre" | "stock" | "price"
-  const [sortOrder, setSortOrder] = useState("default"); // "asc" | "desc" | "default"
+  const [sortBy, setSortBy] = useState("default");
+  const [sortOrder, setSortOrder] = useState("default");
+  const [showModal, setShowModal] = useState(false);
+  const [bookToDelete, setBookToDelete] = useState(null);
+
 
   useEffect(() => {
     api
@@ -24,14 +26,54 @@ export default function BookManager() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this book?")) return;
-    try {
-      await api.delete(`/books/${id}`);
-      setBooks((prev) => prev.filter((b) => b._id !== id));
-    } catch (err) {
-      console.error("Delete failed:", err);
-    }
+  const handleDelete = async (bookId, bookTitle) => {
+    toast((t) => (
+      <div className="text-sm">
+        <p>Delete <strong>{bookTitle}</strong>?</p>
+        <div className="flex gap-3 mt-2">
+          <button
+            onClick={async () => {
+              toast.dismiss(t.id);
+              try {
+                const deleted = books.find((b) => b._id === bookId);
+                setBooks((prev) => prev.filter((b) => b._id !== bookId));
+                await api.delete(`/books/${bookId}`);
+                toast.success("Book deleted");
+
+                // Optionally show undo for 5 seconds
+                toast((undoToast) => (
+                  <div className="text-sm">
+                    <span>Undo delete?</span>
+                    <button
+                      className="ml-3 text-blue-600 font-medium"
+                      onClick={() => {
+                        setBooks((prev) => [deleted, ...prev]);
+                        toast.dismiss(undoToast.id);
+                      }}
+                    >
+                      Undo
+                    </button>
+                  </div>
+                ), { duration: 5000 });
+
+              } catch (err) {
+                toast.error("Failed to delete");
+              }
+            }}
+            className="px-3 py-1 rounded-full bg-red-600 text-white text-xs hover:bg-red-700"
+          >
+            Confirm
+          </button>
+
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="px-3 py-1 rounded-full bg-gray-200 text-xs hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), { duration: 10000 });
   };
 
   const cycleSort = (field) => {
@@ -183,8 +225,8 @@ export default function BookManager() {
               <td className="p-3">
                 <span
                   className={`text-xs font-medium px-2 py-1 rounded-full ${book.stock > 0
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-600"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-600"
                     }`}
                 >
                   {book.stock > 0 ? `${book.stock} in stock` : "Out of stock"}
@@ -203,24 +245,74 @@ export default function BookManager() {
 
               <td className="p-3 space-x-2">
                 <button
-                  onClick={() => alert("🔧 Edit functionality coming soon")}
+                  onClick={() => navigate(`/admin/books/${book._id}/edit`)}
                   className="text-blue-600 hover:underline"
                   title="Edit"
                 >
                   <Pencil size={16} />
                 </button>
+
                 <button
-                  onClick={() => handleDelete(book._id)}
+                  onClick={() => {
+                    setBookToDelete(book);
+                    setShowModal(true);
+                  }}
                   className="text-red-600 hover:underline"
                   title="Delete"
                 >
                   <Trash2 size={16} />
                 </button>
+
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        show={showModal}
+        title="Delete Book"
+        message={`Are you sure you want to delete "${bookToDelete?.title}"?`}
+        onClose={() => setShowModal(false)}
+        onConfirm={async () => {
+          try {
+            setShowModal(false);
+            const deleted = bookToDelete;
+            setBooks((prev) => prev.filter((b) => b._id !== deleted._id));
+            await api.delete(`/books/${deleted._id}`);
+            setLastDeleted(deleted);
+
+            // Show Undo Toast
+            toast((t) => (
+              <div className="flex items-center gap-4 text-sm">
+                <span>
+                  Deleted <strong>{deleted.title}</strong>
+                </span>
+                <button
+                  className="text-blue-600 hover:underline font-medium"
+                  onClick={async () => {
+                    try {
+                      await api.post("/books", deleted); // restore to DB
+                      setBooks((prev) => [deleted, ...prev]);
+                      toast.success("Book restored");
+                    } catch {
+                      toast.error("Restore failed");
+                    }
+                    toast.dismiss(t.id);
+                    setLastDeleted(null);
+                  }}
+                >
+                  Undo
+                </button>
+              </div>
+            ), { duration: 5000 });
+          } catch {
+            toast.error("Failed to delete book");
+          }
+        }}
+        status="error"
+      />
     </div>
   );
 }

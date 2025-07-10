@@ -1,6 +1,6 @@
 import { useContext, useRef, useState, useEffect } from "react";
 import CartContext from "../context/CartContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, Trash2 } from "lucide-react";
 import Breadcrumb from "../components/Breadcrumb";
 
@@ -9,6 +9,8 @@ export default function Cart() {
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const holdRef = useRef(null);
   const [shakeId, setShakeId] = useState(null);
+  const navigate = useNavigate();
+
 
   const startHold = (callback, condition, id) => {
     if (condition) {
@@ -95,11 +97,10 @@ export default function Cart() {
                       }
                       onTouchEnd={stopHold}
                       disabled={isMin}
-                      className={`w-8 h-8 rounded-xl flex items-center justify-center text-lg transition ${
-                        isMin
+                      className={`w-8 h-8 rounded-xl flex items-center justify-center text-lg transition ${isMin
                           ? "bg-gray-100 text-gray-400 cursor-not-allowed opacity-50"
                           : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-                      } ${shakeId === minKey ? "animate-shake" : ""}`}
+                        } ${shakeId === minKey ? "animate-shake" : ""}`}
                     >
                       −
                     </button>
@@ -126,11 +127,10 @@ export default function Cart() {
                       }
                       onTouchEnd={stopHold}
                       disabled={isMax}
-                      className={`w-8 h-8 rounded-xl flex items-center justify-center text-lg transition ${
-                        isMax
+                      className={`w-8 h-8 rounded-xl flex items-center justify-center text-lg transition ${isMax
                           ? "bg-gray-100 text-gray-400 cursor-not-allowed opacity-50"
                           : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-                      } ${shakeId === maxKey ? "animate-shake" : ""}`}
+                        } ${shakeId === maxKey ? "animate-shake" : ""}`}
                     >
                       +
                     </button>
@@ -154,7 +154,11 @@ export default function Cart() {
           </div>
 
           <div className="text-right">
-            <button className="bg-blue-600 text-white px-6 py-2 mt-2 rounded-full hover:bg-blue-800 transition font-semibold">
+            <button
+              disabled={cart.length === 0}
+              onClick={() => navigate("/checkout")}
+              className="mt-4 px-6 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 font-semibold transition disabled:opacity-40"
+            >
               Place Order
             </button>
           </div>

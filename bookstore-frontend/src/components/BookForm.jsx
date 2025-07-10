@@ -1,19 +1,23 @@
-
-// 🚧 WIP : BookForm component is still under development. It'll be updated once completed.
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Loader } from "lucide-react";
 
 export default function BookForm({ initialData = {}, onSubmit, loading }) {
   const [form, setForm] = useState({
-    title: initialData.title || "",
-    author: initialData.author || "",
-    genre: initialData.genre || "",
-    price: initialData.price || "",
-    stock: initialData.stock || "",
-    ISBN: initialData.ISBN || "",
-    imageUrl: initialData.imageUrl || "",
-    description: initialData.description || "",
+    title: "",
+    author: "",
+    genre: "",
+    price: "",
+    stock: "",
+    ISBN: "",
+    imageUrl: "",
+    description: "",
   });
+
+  useEffect(() => {
+    if (initialData && Object.keys(initialData).length > 0) {
+      setForm((prev) => ({ ...prev, ...initialData }));
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,120 +26,101 @@ export default function BookForm({ initialData = {}, onSubmit, loading }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (loading) return;
     onSubmit(form);
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 bg-white p-6 rounded-3xl shadow-md border border-gray-100
-                 transition-all hover:scale-[1.015] hover:shadow-2xl hover:ring-1 hover:ring-gray-200"
+      className="bg-white border border-gray-300 rounded-3xl shadow-2xl p-8 space-y-4 max-w-xl mx-auto"
     >
-      {/* Title */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-        <input
-          name="title"
-          value={form.title}
-          onChange={handleChange}
-          required
-          className="w-full px-3 py-2 border rounded-2xl text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
-        />
-      </div>
+      <div className="grid gap-4">
 
-      {/* Author */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Author</label>
-        <input
-          name="author"
-          value={form.author}
-          onChange={handleChange}
-          required
-          className="w-full px-3 py-2 border rounded-2xl text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
-        />
-      </div>
+        {/* Optional: Image Preview */}
+        {form.imageUrl && (
+          <img
+            src={form.imageUrl}
+            onError={(e) => (e.target.src = "/placeholder.jpeg")}
+            alt="Book Preview"
+            className="w-24 h-32 object-cover rounded shadow mx-auto"
+          />
+        )}
 
-      {/* Genre */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Genre</label>
-        <input
-          name="genre"
-          value={form.genre}
-          onChange={handleChange}
-          required
-          className="w-full px-3 py-2 border rounded-2xl text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
-        />
-      </div>
+        {[{ label: "Title", name: "title" },
+          { label: "Author", name: "author" },
+          { label: "Genre", name: "genre" },
+          { label: "ISBN", name: "ISBN" },
+          { label: "Image URL", name: "imageUrl" },
+        ].map(({ label, name }) => (
+          <div key={name}>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+            <input
+              type="text"
+              name={name}
+              value={form[name]}
+              onChange={handleChange}
+              autoComplete="off"
+              required
+              className="w-full p-2 border rounded-2xl focus:ring focus:ring-blue-200 focus:border-blue-400 transition text-sm"
+            />
+          </div>
+        ))}
 
-      {/* ISBN */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">ISBN</label>
-        <input
-          name="ISBN"
-          value={form.ISBN}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-2xl text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
-        />
-      </div>
+        {/* Price + Stock side by side */}
+        <div className="grid grid-cols-2 gap-12">
+          <div className="flex flex-col items-center">
+            <label className="text-sm font-medium text-gray-600 mb-1 text-center">Price (₹)</label>
+            <input
+              type="number"
+              name="price"
+              value={form.price}
+              onChange={handleChange}
+              autoComplete="off"
+              required
+              className="w-full p-2 border rounded-2xl focus:ring focus:ring-blue-200 focus:border-blue-400 transition text-sm"
+            />
+          </div>
+          <div className="flex flex-col items-center">
+            <label className="text-sm font-medium text-gray-600 mb-1 text-center">Stock</label>
+            <input
+              type="number"
+              name="stock"
+              value={form.stock}
+              onChange={handleChange}
+              autoComplete="off"
+              required
+              className="w-full p-2 border rounded-2xl focus:ring focus:ring-blue-200 focus:border-blue-400 transition text-sm"
+            />
+          </div>
+        </div>
 
-      {/* Price & Stock */}
-      <div className="grid grid-cols-2 gap-4">
+        {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Price (₹)</label>
-          <input
-            name="price"
-            type="number"
-            value={form.price}
+          <label className="block text-sm font-medium text-gray-600 mb-1">Description</label>
+          <textarea
+            name="description"
+            rows={4}
+            value={form.description}
             onChange={handleChange}
+            autoComplete="off"
             required
-            className="w-full px-3 py-2 border rounded-2xl text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+            className="w-full p-2 border rounded-2xl focus:ring focus:ring-blue-200 focus:border-blue-400 transition text-sm resize-none"
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Stock</label>
-          <input
-            name="stock"
-            type="number"
-            value={form.stock}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border rounded-2xl text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
-          />
-        </div>
-      </div>
-
-      {/* Image URL */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-        <input
-          name="imageUrl"
-          value={form.imageUrl}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-2xl text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
-        />
-      </div>
-
-      {/* Description */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-        <textarea
-          name="description"
-          value={form.description}
-          onChange={handleChange}
-          rows={3}
-          className="w-full px-3 py-2 border rounded-2xl text-sm resize-none focus:ring-1 focus:ring-blue-500 focus:outline-none"
-        />
       </div>
 
       {/* Submit Button */}
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-80 bg-blue-600 text-white font-semibold py-2 rounded-full hover:bg-blue-700 transition disabled:opacity-50"
-      >
-        {loading ? "Submitting..." : "Submit"}
-      </button>
+      <div className="text-right">
+        <button
+          type="submit"
+          disabled={loading}
+          className={`px-7 py-2 rounded-full font-semibold text-white transition ${
+            loading ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+          }`}
+        >
+          {loading ? <Loader className="w-4 h-4 animate-spin inline" /> : "Save Book"}
+        </button>
+      </div>
     </form>
   );
 }

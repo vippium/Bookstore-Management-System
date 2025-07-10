@@ -4,10 +4,12 @@ import CartContext from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { ShoppingBag, FileText, PackageCheck, CheckCircle } from "lucide-react";
 
+
 export default function Checkout() {
   const { user } = useContext(AuthContext);
-  const { cart, total, clearCart } = useContext(CartContext);
+  const { cart, total, clearCart, removeFromCart } = useContext(CartContext);
   const navigate = useNavigate();
+  
 
   const [form, setForm] = useState({
     name: user?.name || "",
@@ -88,7 +90,7 @@ export default function Checkout() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6 animate-fade-in">
       <div className="flex items-center gap-2 text-2xl font-bold text-blue-700 mb-6">
         <ShoppingBag className="w-6 h-6" />
         <span>Checkout</span>
@@ -102,12 +104,29 @@ export default function Checkout() {
             Order Summary
           </h3>
 
-          <div className="space-y-4 text-sm">
+          <div className="space-y-4 text-sm max-h-[400px] overflow-y-auto pr-1 custom-scrollbar">
             {cart.map((item) => (
               <div
                 key={item._id}
-                className="flex items-center gap-3 p-3 rounded-xl border bg-white shadow-md"
+                className="flex items-center gap-3 p-3 rounded-xl border bg-white shadow-md relative"
               >
+                {/* Remove button */}
+                <button
+                  onClick={() => removeFromCart(item._id)}
+                  className="absolute top-2 right-2 text-gray-400 hover:text-red-600"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+
                 <img
                   src={item.imageUrl}
                   alt={item.title}
@@ -151,11 +170,10 @@ export default function Checkout() {
                   name={field}
                   value={form[field]}
                   onChange={handleChange}
-                  className={`w-full px-4 py-2 pr-10 rounded-lg shadow-sm text-sm transition-all focus:outline-none focus:ring-2 ${
-                    errors[field]
+                  className={`w-full px-4 py-2 pr-10 rounded-lg shadow-sm text-sm transition-all focus:outline-none focus:ring-2 ${errors[field]
                       ? "border-red-400 focus:ring-red-300"
                       : "border border-gray-300 focus:ring-blue-400"
-                  }`}
+                    }`}
                 />
 
                 {/* ✅ Check Icon */}
@@ -169,9 +187,8 @@ export default function Checkout() {
 
               {/* Error Message */}
               <p
-                className={`text-xs mt-1 min-h-[1rem] transition-all duration-200 ${
-                  errors[field] ? "text-red-500" : "text-transparent"
-                }`}
+                className={`text-xs mt-1 min-h-[1rem] transition-all duration-200 ${errors[field] ? "text-red-500" : "text-transparent"
+                  }`}
               >
                 {errors[field] || "placeholder"}
               </p>

@@ -8,6 +8,7 @@ import api from "../services/axios";
 export default function AddBook() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  
 
   const handleAddBook = async (data) => {
     setLoading(true);
@@ -25,7 +26,7 @@ export default function AddBook() {
   return (
     <div className="max-w-2xl mx-auto p-6">
       {/* Icon + Title */}
-      <div className="flex items-center gap-2 mb-4 text-blue-700">
+      <div className="flex items-center gap-2 mb-4 text-green-600">
         <BookPlus className="w-6 h-6" />
         <h2 className="text-lg font-bold">Add New Book</h2>
       </div>
