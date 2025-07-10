@@ -1,4 +1,6 @@
 # Logs
+/bookstore-backend/node_modules
+/bookstore-frontend/node_modules
 logs
 *.log
 npm-debug.log*
