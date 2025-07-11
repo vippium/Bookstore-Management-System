@@ -26,7 +26,6 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({ name, email, password: hashedPassword });
-    
 
     res.status(201).json({
       _id: user._id,
@@ -42,13 +41,17 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  user.lastLogin = new Date();
+  await user.save();
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
+
     if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
+    if (!isMatch)
+      return res.status(401).json({ message: "Invalid credentials" });
 
     res.status(200).json({
       _id: user._id,
@@ -110,6 +113,35 @@ const getMe = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "Both fields are required" });
+    }
+
+    const user = await User.findById(req.user._id).select("+password"); // ✅ move here
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Current password is incorrect" });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (err) {
+    console.error("Password update error:", err);
+    res.status(500).json({
+      message: "Failed to update password",
+      error: err.message,
+    });
+  }
+};
 
 module.exports = {
   registerUser,
@@ -117,4 +149,5 @@ module.exports = {
   deleteUser,
   updateProfile,
   getMe,
+  changePassword,
 };

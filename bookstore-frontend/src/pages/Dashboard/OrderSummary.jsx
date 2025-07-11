@@ -11,7 +11,7 @@ export default function OrderSummary() {
         const sorted = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setLatest(sorted[0]);
       })
-      .catch((err) => console.error("Error fetching order summary:", err));
+      .catch((err) => toast.error("Error fetching order summary:", err));
   }, []);
 
   return (

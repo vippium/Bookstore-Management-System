@@ -10,6 +10,8 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import AdminDashboard from "./pages/Dashboard/AdminDashboard";
 import EditBook from "./pages/EditBook";
 import AddBook from "./pages/AddBook";
+import OrderSuccess from "./pages/OrderSuccess";
+import Profile from "./pages/Profile";
 
 
 // New unified route guard
@@ -26,12 +28,14 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/books/:id" element={<BookDetails />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
 
         {/* Protected Routes (any authenticated user) */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
 
         {/* Admin Only */}

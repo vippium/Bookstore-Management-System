@@ -4,46 +4,57 @@ import { Loader, Download, Repeat } from "lucide-react";
 import CartContext from "../../context/CartContext";
 import { useReactToPrint } from "react-to-print";
 import InvoiceCard from "../../components/InvoiceCard";
+import toast from "react-hot-toast";
 
 export default function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const { addToCart } = useContext(CartContext);
-
-  // 🧠 Create a ref object to store dynamic refs
   const invoiceRefs = useRef({});
+  const printTargetRef = useRef(null);
 
-  const handlePrint = (orderId) => {
-    const printHandler = useReactToPrint({
-      content: () => invoiceRefs.current[orderId],
-    });
-    printHandler();
-  };
+  const handlePrint = useReactToPrint({
+    content: () => printTargetRef.current,
+    documentTitle: "Bookstore-Invoice",
+    onAfterPrint: () => toast.success("🖨️ Invoice printed"),
+    onPrintError: (err) => toast.error("Print error:", err),
+  });
 
   useEffect(() => {
-    api.get("/orders/mine")
+    api
+      .get("/orders/mine")
       .then((res) => setOrders(res.data))
-      .catch(() => console.error("Failed to load orders"))
+      .catch(() => toast.error("Failed to load orders"))
       .finally(() => setLoading(false));
   }, []);
 
   const getStatusStyle = (status) => {
     switch (status) {
-      case "delivered": return "bg-green-100 text-green-700";
-      case "processing": return "bg-blue-100 text-blue-700";
-      case "shipped": return "bg-indigo-100 text-indigo-700";
-      case "cancelled": return "bg-red-100 text-red-600";
-      default: return "bg-gray-100 text-gray-600";
+      case "delivered":
+        return "bg-green-100 text-green-700";
+      case "processing":
+        return "bg-blue-100 text-blue-700";
+      case "shipped":
+        return "bg-indigo-100 text-indigo-700";
+      case "cancelled":
+        return "bg-red-100 text-red-600";
+      default:
+        return "bg-gray-100 text-gray-600";
     }
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "delivered": return "✅";
-      case "processing": return "⏳";
-      case "shipped": return "📦";
-      case "cancelled": return "❌";
-      default: return "🕓";
+      case "delivered":
+        return "✅";
+      case "processing":
+        return "⏳";
+      case "shipped":
+        return "📦";
+      case "cancelled":
+        return "❌";
+      default:
+        return "🕓";
     }
   };
 
@@ -59,6 +70,7 @@ export default function MyOrders() {
     items.forEach((item) => {
       addToCart({ ...item, _id: item.bookId });
     });
+    toast.success("Items added back to cart");
   };
 
   if (loading) {
@@ -73,7 +85,11 @@ export default function MyOrders() {
   if (orders.length === 0) {
     return (
       <div className="text-center text-gray-400 py-10">
-        <img src="/empty-box.png" alt="No Orders" className="w-32 mx-auto mb-3 opacity-70" />
+        <img
+          src="/empty-box.png"
+          alt="No Orders"
+          className="w-32 mx-auto mb-3 opacity-70"
+        />
         <p className="text-sm">No orders yet. Start shopping!</p>
       </div>
     );
@@ -102,7 +118,9 @@ export default function MyOrders() {
               </div>
 
               <div className="flex justify-between items-center">
-                <span className={`text-xs px-2 py-1 rounded-full font-medium ${getStatusStyle(order.status)}`}>
+                <span
+                  className={`text-xs px-2 py-1 rounded-full font-medium ${getStatusStyle(order.status)}`}
+                >
                   {getStatusIcon(order.status)} {order.status}
                 </span>
                 <span className="text-sm text-blue-800 font-semibold">
@@ -112,14 +130,23 @@ export default function MyOrders() {
 
               <ul className="list-disc ml-5 text-sm text-gray-700 space-y-1">
                 {order.items.map((item, idx) => (
-                  <li key={idx}>{item.title} × {item.quantity}</li>
+                  <li key={idx}>
+                    {item.title} × {item.quantity}
+                  </li>
                 ))}
               </ul>
 
-              {/* Actions */}
               <div className="flex gap-3 text-xs mt-2">
                 <button
-                  onClick={() => handlePrint(order._id)}
+                  onClick={() => {
+                    const ref = invoiceRefs.current[order._id];
+                    if (ref) {
+                      printTargetRef.current = ref;
+                      handlePrint();
+                    } else {
+                      toast.error("Invoice not ready");
+                    }
+                  }}
                   className="flex items-center gap-1 text-blue-600 hover:underline"
                 >
                   <Download className="w-4 h-4" /> Invoice
@@ -133,10 +160,12 @@ export default function MyOrders() {
                 </button>
               </div>
 
-              {/* Hidden invoice for print */}
-              <div className="hidden">
+              {/* Hidden Invoice DOM for printing */}
+              <div style={{ display: "none" }}>
                 <InvoiceCard
-                  ref={(el) => (invoiceRefs.current[order._id] = el)}
+                  ref={(el) => {
+                    if (el) invoiceRefs.current[order._id] = el;
+                  }}
                   order={order}
                 />
               </div>

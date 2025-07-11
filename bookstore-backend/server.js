@@ -1,7 +1,11 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const connectDB = require('./config/db');
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const connectDB = require("./config/db");
+const orderRoutes = require("./routes/orderRoutes");
+const { protect } = require("./middleware/authMiddleware");
+const analyticsRoutes = require("./routes/analyticsRoutes");
+const authRoutes = require('./routes/authRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -10,29 +14,25 @@ connectDB();
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use("/api/orders", require("./routes/orderRoutes"));
 
 // Middlewares
-const { protect } = require('./middleware/authMiddleware');
 
-
-app.get('/api/secret', protect, (req, res) => {
+app.get("/api/secret", protect, (req, res) => {
   res.json({
     message: `Hello ${req.user.name}, you're logged in.`,
-    user: req.user
+    user: req.user,
   });
 });
 
 // Routes
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/books', require('./routes/bookRoutes'));
-app.use('/api/orders', require('./routes/orderRoutes'));
-
-
+app.use("/api/books", require("./routes/bookRoutes"));
+app.use("/api/orders", orderRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use('/api/auth', authRoutes);
 
 // Test Route
-app.get('/', (req, res) => {
-  res.send('📚 Bookstore API is running...');
+app.get("/", (req, res) => {
+  res.send("📚 Bookstore API is running...");
 });
 
 // Start Server

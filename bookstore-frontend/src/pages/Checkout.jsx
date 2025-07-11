@@ -1,15 +1,31 @@
 import { useContext, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import CartContext from "../context/CartContext";
-import { useNavigate } from "react-router-dom";
+import api from "../services/axios";
 import { ShoppingBag, FileText, PackageCheck, CheckCircle } from "lucide-react";
-
+import toast from "react-hot-toast";
 
 export default function Checkout() {
   const { user } = useContext(AuthContext);
-  const { cart, total, clearCart, removeFromCart } = useContext(CartContext);
+  const { cart, total: cartTotal, clearCart, removeFromCart } = useContext(CartContext);
+  const location = useLocation();
   const navigate = useNavigate();
-  
+
+  const buyNowItem = location.state?.book;
+  const quantity = location.state?.quantity || 1;
+
+  const items = buyNowItem
+    ? [{
+        ...buyNowItem,
+        quantity,
+        bookId: buyNowItem._id,
+      }]
+    : cart;
+
+  const total = buyNowItem
+    ? buyNowItem.price * quantity
+    : cartTotal;
 
   const [form, setForm] = useState({
     name: user?.name || "",
@@ -23,18 +39,10 @@ export default function Checkout() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
 
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    // Clear the error for that field as user types
     if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "", // Clear error on input
-      }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -44,8 +52,7 @@ export default function Checkout() {
     if (!form.email.trim()) newErrors.email = "Email is required";
     if (!form.address.trim()) newErrors.address = "Address is required";
     if (!form.city.trim()) newErrors.city = "City is required";
-    if (!form.postalCode.trim())
-      newErrors.postalCode = "Postal code is required";
+    if (!form.postalCode.trim()) newErrors.postalCode = "Postal code is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -54,38 +61,26 @@ export default function Checkout() {
     if (!validateForm()) return;
 
     const orderData = {
-      userId: user._id,
-      name: form.name,
-      email: form.email,
       address: form.address,
       city: form.city,
       postalCode: form.postalCode,
-      items: cart.map(({ _id, title, price, quantity }) => ({
+      total,
+      items: items.map(({ _id, title, price, quantity }) => ({
         bookId: _id,
         title,
         price,
         quantity,
       })),
-      total,
     };
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/orders`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(orderData),
-      });
-
-      if (!res.ok) throw new Error("Failed to place order");
-
-      alert("✅ Order placed!");
-      clearCart();
-      navigate("/my-orders");
+      await api.post("/orders", orderData);
+      toast.success("✅ Order placed!");
+      if (!buyNowItem) clearCart();
+      navigate("/order-success", { state: { orderId: order._id } });
     } catch (err) {
-      alert("❌ Order failed: " + err.message);
+      const msg = err.response?.data?.message || "Failed to place order";
+      toast.error("❌ Order failed: " + msg);
     }
   };
 
@@ -97,7 +92,8 @@ export default function Checkout() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto px-4 md:px-0 py-3">
-        {/* Right: Summary */}
+
+        {/* Order Summary */}
         <div className="bg-white p-6 rounded-3xl shadow-md border border-blue-100 order-1 md:order-2 hover:scale-105 transition-all duration-300">
           <h3 className="text-xl font-bold text-blue-700 mb-6 flex items-center gap-2">
             <FileText className="w-5 h-5" />
@@ -105,27 +101,28 @@ export default function Checkout() {
           </h3>
 
           <div className="space-y-4 text-sm max-h-[400px] overflow-y-auto pr-1 custom-scrollbar">
-            {cart.map((item) => (
+            {items.map((item) => (
               <div
                 key={item._id}
                 className="flex items-center gap-3 p-3 rounded-xl border bg-white shadow-md relative"
               >
-                {/* Remove button */}
-                <button
-                  onClick={() => removeFromCart(item._id)}
-                  className="absolute top-2 right-2 text-gray-400 hover:text-red-600"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
+                {!buyNowItem && (
+                  <button
+                    onClick={() => removeFromCart(item._id)}
+                    className="absolute top-2 right-2 text-gray-400 hover:text-red-600"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
 
                 <img
                   src={item.imageUrl}
@@ -151,7 +148,7 @@ export default function Checkout() {
           </div>
         </div>
 
-        {/* Left: Delivery Form */}
+        {/* Delivery Form */}
         <div className="bg-white p-6 rounded-3xl shadow-md border border-blue-100 order-2 md:order-1 hover:scale-105 transition-all duration-300">
           <h3 className="text-xl font-bold text-blue-700 mb-6 flex items-center gap-2">
             <PackageCheck className="w-5 h-5" />
@@ -170,13 +167,12 @@ export default function Checkout() {
                   name={field}
                   value={form[field]}
                   onChange={handleChange}
-                  className={`w-full px-4 py-2 pr-10 rounded-lg shadow-sm text-sm transition-all focus:outline-none focus:ring-2 ${errors[field]
+                  className={`w-full px-4 py-2 pr-10 rounded-lg shadow-sm text-sm transition-all focus:outline-none focus:ring-2 ${
+                    errors[field]
                       ? "border-red-400 focus:ring-red-300"
                       : "border border-gray-300 focus:ring-blue-400"
-                    }`}
+                  }`}
                 />
-
-                {/* ✅ Check Icon */}
                 {form[field].trim() && !errors[field] && (
                   <CheckCircle
                     className="w-5 h-5 text-green-500 absolute right-3 top-1/4 pointer-events-none animate-zoom-in"
@@ -185,10 +181,10 @@ export default function Checkout() {
                 )}
               </div>
 
-              {/* Error Message */}
               <p
-                className={`text-xs mt-1 min-h-[1rem] transition-all duration-200 ${errors[field] ? "text-red-500" : "text-transparent"
-                  }`}
+                className={`text-xs mt-1 min-h-[1rem] transition-all duration-200 ${
+                  errors[field] ? "text-red-500" : "text-transparent"
+                }`}
               >
                 {errors[field] || "placeholder"}
               </p>
