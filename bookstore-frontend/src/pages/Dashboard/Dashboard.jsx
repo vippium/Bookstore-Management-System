@@ -1,7 +1,8 @@
 import { useContext } from "react";
 import AuthContext from "../../context/AuthContext";
-import {UserCircle,ListOrdered,BarChartBig,MailCheck,AlertTriangle,} from "lucide-react";
+import {UserCircle,ListOrdered,BarChartBig} from "lucide-react";
 import MyOrders from "./MyOrders";
+import UserOrdersChart from "../../components/UserOrdersChart";
 
 export default function Dashboard() {
   const { user } = useContext(AuthContext);
@@ -16,15 +17,6 @@ export default function Dashboard() {
 
         <p className="flex items-center gap-2">
           <strong>Name:</strong> {user?.name}
-          {user?.isVerified ? (
-            <span className="flex items-center gap-1 text-green-600 text-xs font-medium">
-              <MailCheck className="w-4 h-4" /> Verified
-            </span>
-          ) : (
-            <span className="flex items-center gap-1 text-yellow-600 text-xs font-medium">
-              <AlertTriangle className="w-4 h-4" /> Not Verified
-            </span>
-          )}
         </p>
 
         <p>
@@ -45,7 +37,9 @@ export default function Dashboard() {
             Delete Account
           </button>
         </div>
+        
       </div>
+      
 
       <div className="bg-white border border-blue-100 rounded-2xl shadow-md p-6 hover:scale-105 duration-300 hover:shadow-xl hover:ring-1 hover:ring-blue-500">
         <div className="flex items-center gap-3 mb-4">
@@ -60,9 +54,7 @@ export default function Dashboard() {
           <BarChartBig className="w-6 h-6 text-blue-600" />
           <h2 className="text-xl font-semibold text-blue-700">Order Summary</h2>
         </div>
-        <p className="text-sm text-gray-500">
-          📊 Summary stats will be available here after you start ordering items.
-        </p>
+        <UserOrdersChart />
       </div>
     </div>
   );

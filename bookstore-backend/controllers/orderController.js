@@ -140,10 +140,43 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-// ✅ Final export
+
+// ✅ Get user's own Order's Stats
+const getUserOrderStats = async (req, res) => {
+  try {
+    console.log("🔐 Authenticated user:", req.user);
+
+    const orders = await Order.find({ user: req.user._id });
+
+    console.log(`📦 Found ${orders.length} orders for user ${req.user._id}`);
+    console.log("🧾 Sample order:", orders[0]);
+
+    const dailyStats = {};
+
+    orders.forEach((order) => {
+      const day = new Date(order.createdAt).toISOString().split("T")[0];
+      dailyStats[day] = (dailyStats[day] || 0) + 1;
+    });
+
+    const result = Object.entries(dailyStats).map(([date, count]) => ({
+      date,
+      count,
+    }));
+
+    console.log("📊 Final stats:", result);
+
+    res.json(result);
+  } catch (err) {
+    console.error("❌ Error in getUserOrderStats:", err.message);
+    res.status(500).json({ message: "Failed to load user order stats", error: err.message });
+  }
+};
+
+
 module.exports = {
   createOrder,
   getMyOrders,
   getAllOrders,
   updateOrderStatus,
+  getUserOrderStats,
 };

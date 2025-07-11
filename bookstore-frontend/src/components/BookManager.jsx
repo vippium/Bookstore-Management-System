@@ -224,13 +224,21 @@ export default function BookManager() {
 
               <td className="p-3">
                 <span
-                  className={`text-xs font-medium px-2 py-1 rounded-full ${book.stock > 0
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-600"
+                  className={`text-xs font-medium px-2 py-1 rounded-full
+    ${book.stock === 0
+                      ? "bg-red-100 text-red-600"
+                      : book.stock <= 5
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-green-100 text-green-700"
                     }`}
                 >
-                  {book.stock > 0 ? `${book.stock} in stock` : "Out of stock"}
+                  {book.stock === 0
+                    ? "Out of stock"
+                    : book.stock <= 5
+                      ? `${book.stock} (Low Stock)`
+                      : `${book.stock} in stock`}
                 </span>
+
               </td>
 
               <td className="p-3 text-blue-600 font-semibold">₹{book.price}</td>
