@@ -1,50 +1,32 @@
 import { useContext } from "react";
 import AuthContext from "../../context/AuthContext";
-import { UserCircle, ListOrdered, BarChartBig, ShieldCheck, User2, } from "lucide-react";
+import {UserCircle,ListOrdered,BarChartBig,MailCheck,AlertTriangle,} from "lucide-react";
 import MyOrders from "./MyOrders";
 
 export default function Dashboard() {
   const { user } = useContext(AuthContext);
 
-
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 space-y-6 transition-all animate-fade-in">
-
-
-      {/* User Info Card */}
+    <div className="max-w-6xl mx-auto px-4 py-8 space-y-6 animate-fade-in">
       <div className="relative bg-white border border-blue-100 rounded-3xl shadow-md p-6 hover:shadow-xl hover:ring-1 hover:ring-blue-500 transition-all hover:scale-x-105 duration-300">
-
-
-        {/* Role Badge */}
-        <span
-          className={`absolute top-4 right-4 text-xs px-3 py-1 rounded-full font-medium shadow-sm flex items-center gap-1
-    ${user?.role === "admin"
-              ? "bg-green-100 text-green-700"
-              : "bg-blue-100 text-blue-700"
-            }
-  `}
-        >
-          {user?.role === "admin" ? (
-            <>
-              <ShieldCheck className="w-3.5 h-3.5" />
-              Administrator
-            </>
-          ) : (
-            <>
-              <User2 className="w-3.5 h-3.5" />
-              Customer
-            </>
-          )}
-        </span>
-
         <div className="flex items-center gap-3 mb-4">
           <UserCircle className="w-6 h-6 text-blue-600" />
           <h2 className="text-xl font-semibold text-blue-700">User Info</h2>
         </div>
 
-        <p>
+        <p className="flex items-center gap-2">
           <strong>Name:</strong> {user?.name}
+          {user?.isVerified ? (
+            <span className="flex items-center gap-1 text-green-600 text-xs font-medium">
+              <MailCheck className="w-4 h-4" /> Verified
+            </span>
+          ) : (
+            <span className="flex items-center gap-1 text-yellow-600 text-xs font-medium">
+              <AlertTriangle className="w-4 h-4" /> Not Verified
+            </span>
+          )}
         </p>
+
         <p>
           <strong>Email:</strong> {user?.email}
         </p>
@@ -65,7 +47,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* My Orders Card */}
       <div className="bg-white border border-blue-100 rounded-2xl shadow-md p-6 hover:scale-105 duration-300 hover:shadow-xl hover:ring-1 hover:ring-blue-500">
         <div className="flex items-center gap-3 mb-4">
           <ListOrdered className="w-6 h-6 text-blue-600" />
@@ -74,7 +55,6 @@ export default function Dashboard() {
         <MyOrders />
       </div>
 
-      {/* Order Summary Card */}
       <div className="bg-white border border-blue-100 rounded-2xl shadow-md p-6 hover:scale-105 duration-300 hover:shadow-xl hover:ring-1 hover:ring-blue-500">
         <div className="flex items-center gap-3 mb-4">
           <BarChartBig className="w-6 h-6 text-blue-600" />
