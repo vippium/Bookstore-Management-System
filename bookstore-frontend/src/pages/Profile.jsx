@@ -10,7 +10,16 @@ import {
   Trash2,
   CalendarDays,
   MailCheck,
-  UserCircle
+  UserCircle,
+  User,
+  KeyRound,
+  Flame,
+  UserCog,
+  Save,
+  RotateCcw,
+  UserX,
+  Loader,
+  XCircle // For toast error icon
 } from "lucide-react";
 
 export default function Profile() {
@@ -27,7 +36,9 @@ export default function Profile() {
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
-    if (user) setForm({ name: user.name, email: user.email });
+    if (user) {
+      setForm({ name: user.name, email: user.email });
+    }
   }, [user]);
 
   const handleInput = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -50,9 +61,9 @@ export default function Profile() {
     setSaving(true);
     try {
       await api.put("/auth/update", form);
-      toast.success("Profile updated");
+      toast.success("Profile updated", { icon: <CheckCircle size={20} className="text-green-500" /> });
     } catch (err) {
-      toast.error(err.response?.data?.message || "Update failed");
+      toast.error(err.response?.data?.message || "Update failed", { icon: <XCircle size={20} className="text-red-500" /> });
     } finally {
       setSaving(false);
     }
@@ -60,7 +71,7 @@ export default function Profile() {
 
   const changePassword = async () => {
     if (!passwordForm.current || !passwordForm.new) {
-      return toast.error("Both fields are required");
+      return toast.error("Both fields are required", { icon: <XCircle size={20} className="text-red-500" /> });
     }
 
     setChanging(true);
@@ -69,11 +80,11 @@ export default function Profile() {
         currentPassword: passwordForm.current,
         newPassword: passwordForm.new,
       });
-      toast.success("Password updated");
+      toast.success("Password updated", { icon: <CheckCircle size={20} className="text-green-500" /> });
       setPasswordForm({ current: "", new: "" });
       setPasswordStrength("");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to change password");
+      toast.error(err.response?.data?.message || "Failed to change password", { icon: <XCircle size={20} className="text-red-500" /> });
     } finally {
       setChanging(false);
     }
@@ -82,57 +93,53 @@ export default function Profile() {
   const deleteAccount = async () => {
     try {
       await api.delete("/auth/delete");
-      toast.success("Account deleted");
+      toast.success("Account deleted", { icon: <CheckCircle size={20} className="text-green-500" /> });
       logout();
     } catch {
-      toast.error("Failed to delete account");
+      toast.error("Failed to delete account", { icon: <XCircle size={20} className="text-red-500" /> });
     }
   };
 
-  const getCheck = (field) =>
-    form[field].trim() && (
-      <CheckCircle className="w-5 h-5 text-green-500 absolute right-3 top-3/4 -translate-y-3.5" />
-    );
-
   return (
-    <div className="max-w-xl mx-auto p-6 animate-fade-in">
+    <div className="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
       {/* Header */}
-      <h2 className="text-2xl font-bold text-blue-700 flex items-center gap-2 mb-4">
+      <h2 className="text-2xl font-bold text-blue-700 flex items-center gap-2 mb-6 border-b pb-3">
         <UserCircle className="w-6 h-6 text-blue-600" />
         Manage Profile
       </h2>
 
       {/* Tabs */}
-      <div className="flex gap-3 text-sm border-b mb-4">
+      <div className="flex gap-3 text-sm border-b mb-6">
         {[
-          { key: "info", label: "Profile Info", color: "blue" },
-          { key: "password", label: "Change Password", color: "yellow" },
-          { key: "danger", label: "Danger Zone", color: "red" },
+          { key: "info", label: "Profile Info", icon: UserCog, color: "blue" },
+          { key: "password", label: "Change Password", icon: KeyRound, color: "yellow" },
+          { key: "danger", label: "Danger Zone", icon: Flame, color: "red" },
         ].map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`px-3 py-1.5 font-medium rounded-t transition-all ${
-              activeTab === tab.key
+            className={`px-4 py-2 font-medium rounded-t-lg transition-all flex items-center gap-2
+              ${activeTab === tab.key
                 ? `text-${tab.color}-600 border-b-2 border-${tab.color}-600`
-                : "text-gray-500"
-            }`}
+                : "text-gray-500 hover:text-gray-700"
+              }`}
           >
+            <tab.icon className={`w-4 h-4 text-${tab.color}-600`} />
             {tab.label}
           </button>
         ))}
       </div>
 
-      {/* Info */}
+      {/* Info Tab Content */}
       {activeTab === "info" && (
-        <div className="bg-white border border-blue-100 p-6 rounded-2xl shadow space-y-5">
+        <div className="space-y-5 p-4 border border-gray-200 rounded-lg bg-gray-50">
           <div className="flex justify-end">
             <span
-              className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
-                user?.isVerified
+              className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium
+                ${user?.isVerified
                   ? "bg-green-100 text-green-700"
                   : "bg-yellow-100 text-yellow-700"
-              }`}
+                }`}
             >
               {user?.isVerified ? (
                 <>
@@ -148,35 +155,50 @@ export default function Profile() {
             </span>
           </div>
 
-          {["name", "email"].map((field) => (
-            <div className="relative" key={field}>
-              <label className="block text-sm font-medium capitalize mb-1">
-                {field}
-              </label>
-              <input
-                type={field === "email" ? "email" : "text"}
-                name={field}
-                value={form[field]}
-                onChange={handleInput}
-                className="w-full px-4 py-2 border rounded-lg shadow-sm text-sm border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              />
-              {getCheck(field)}
-            </div>
-          ))}
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={form.name}
+              onChange={handleInput}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-400 focus:border-blue-400 focus:outline-none text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={form.email}
+              onChange={handleInput}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-400 focus:border-blue-400 focus:outline-none text-sm"
+            />
+          </div>
 
           <button
             onClick={saveProfile}
             disabled={saving}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-medium transition disabled:opacity-50"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md font-medium transition disabled:opacity-50 flex items-center gap-2"
           >
-            {saving ? "Saving..." : "Save Changes"}
+            {saving ? (
+              <>
+                <Loader className="w-4 h-4 animate-spin" /> Saving...
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" /> Save Changes
+              </>
+            )}
           </button>
         </div>
       )}
 
-      {/* Password */}
+      {/* Password Tab Content */}
       {activeTab === "password" && (
-        <div className="bg-white border border-yellow-100 p-6 rounded-2xl shadow space-y-4">
+        <div className="space-y-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
           <div className="flex items-center gap-2 text-yellow-600 font-semibold mb-2">
             <Lock className="w-4 h-4" />
             Change Password
@@ -188,7 +210,7 @@ export default function Profile() {
             placeholder="Current Password"
             value={passwordForm.current}
             onChange={handlePasswordInput}
-            className="w-full px-4 py-2 border rounded-lg text-sm border-gray-300 focus:ring-2 focus:ring-yellow-400 focus:outline-none"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-400 focus:border-yellow-400 focus:outline-none text-sm"
           />
           <input
             type="password"
@@ -196,7 +218,7 @@ export default function Profile() {
             placeholder="New Password"
             value={passwordForm.new}
             onChange={handlePasswordInput}
-            className="w-full px-4 py-2 border rounded-lg text-sm border-gray-300 focus:ring-2 focus:ring-yellow-400 focus:outline-none"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-400 focus:border-yellow-400 focus:outline-none text-sm"
           />
 
           {passwordStrength && (
@@ -216,16 +238,24 @@ export default function Profile() {
           <button
             onClick={changePassword}
             disabled={changing}
-            className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-full font-medium transition disabled:opacity-50"
+            className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-md font-medium transition disabled:opacity-50 flex items-center gap-2"
           >
-            {changing ? "Changing..." : "Change Password"}
+            {changing ? (
+              <>
+                <Loader className="w-4 h-4 animate-spin" /> Changing...
+              </>
+            ) : (
+              <>
+                <RotateCcw className="w-4 h-4" /> Change Password
+              </>
+            )}
           </button>
         </div>
       )}
 
-      {/* Danger Zone */}
+      {/* Danger Zone Tab Content */}
       {activeTab === "danger" && (
-        <div className="bg-white border border-red-100 p-6 rounded-2xl shadow space-y-4">
+        <div className="space-y-4 p-4 border border-red-200 rounded-lg bg-red-50">
           <div className="text-red-600 font-semibold flex items-center gap-2">
             <Trash2 className="w-5 h-5" />
             Delete Account
@@ -235,9 +265,9 @@ export default function Profile() {
           </p>
           <button
             onClick={() => setConfirmDelete(true)}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full font-medium"
+            className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-md font-medium flex items-center gap-2"
           >
-            Delete Account
+            <UserX className="w-4 h-4" /> Delete Account
           </button>
         </div>
       )}
@@ -254,13 +284,13 @@ export default function Profile() {
             <div className="flex justify-center gap-4 mt-4">
               <button
                 onClick={() => setConfirmDelete(false)}
-                className="px-4 py-1.5 rounded-full border text-gray-700 hover:bg-gray-50"
+                className="px-4 py-1.5 rounded-md border text-gray-700 hover:bg-gray-50"
               >
                 Cancel
               </button>
               <button
                 onClick={deleteAccount}
-                className="px-4 py-1.5 rounded-full bg-red-600 text-white hover:bg-red-700"
+                className="px-4 py-1.5 rounded-md bg-red-600 text-white hover:bg-red-700"
               >
                 Confirm
               </button>
@@ -270,15 +300,15 @@ export default function Profile() {
       )}
 
       {/* Account Metadata */}
-      <div className="text-xs text-gray-500 flex gap-4 mt-6">
+      <div className="text-xs text-gray-500 flex flex-col sm:flex-row gap-4 mt-6 border-t pt-4">
         <div className="flex items-center gap-1">
           <CalendarDays className="w-4 h-4" />
-          Joined: {new Date(user?.createdAt).toLocaleDateString()}
+          Joined: {new Date(user?.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
         </div>
         {user?.lastLogin && (
           <div className="flex items-center gap-1">
             <ShieldCheck className="w-4 h-4" />
-            Last Login: {new Date(user.lastLogin).toLocaleString()}
+            Last Login: {new Date(user.lastLogin).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
           </div>
         )}
       </div>

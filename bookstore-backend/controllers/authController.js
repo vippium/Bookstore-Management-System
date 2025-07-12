@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+// 🔑 Generate JWT Token
 const generateToken = (user) => {
   return jwt.sign(
     { id: user._id, name: user.name, email: user.email, role: user.role },
@@ -10,6 +11,7 @@ const generateToken = (user) => {
   );
 };
 
+// 📝 Register New User
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -39,19 +41,19 @@ const registerUser = async (req, res) => {
   }
 };
 
+// 🔐 Login User
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
-  user.lastLogin = new Date();
-  await user.save();
 
   try {
     const user = await User.findOne({ email }).select("+password");
-
     if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(401).json({ message: "Invalid credentials" });
+    if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
+
+    user.lastLogin = new Date();
+    await user.save();
 
     res.status(200).json({
       _id: user._id,
@@ -65,6 +67,7 @@ const loginUser = async (req, res) => {
   }
 };
 
+// ❌ Delete Account
 const deleteUser = async (req, res) => {
   try {
     await User.findByIdAndDelete(req.user._id);
@@ -74,6 +77,7 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// ⚙️ Update Name/Email
 const updateProfile = async (req, res) => {
   const { name, email } = req.body;
 
@@ -100,6 +104,7 @@ const updateProfile = async (req, res) => {
   }
 };
 
+// 🙋 Get Authenticated User Info
 const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password");
@@ -113,6 +118,7 @@ const getMe = async (req, res) => {
   }
 };
 
+// 🔐 Change Password
 const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
@@ -121,8 +127,7 @@ const changePassword = async (req, res) => {
       return res.status(400).json({ message: "Both fields are required" });
     }
 
-    const user = await User.findById(req.user._id).select("+password"); // ✅ move here
-
+    const user = await User.findById(req.user._id).select("+password");
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
@@ -135,7 +140,6 @@ const changePassword = async (req, res) => {
 
     res.status(200).json({ message: "Password updated successfully" });
   } catch (err) {
-    console.error("Password update error:", err);
     res.status(500).json({
       message: "Failed to update password",
       error: err.message,

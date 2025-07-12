@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
+    // 🧍 Basic Info
     name: {
       type: String,
       required: [true, "Please enter your name"],
@@ -16,6 +17,8 @@ const userSchema = new mongoose.Schema(
       required: [true, "Please enter your password"],
       select: false,
     },
+
+    // 🔐 Role & Verification
     role: {
       type: String,
       enum: ["customer", "admin"],
@@ -25,6 +28,8 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+
+    // ⏱️ Activity
     lastLogin: Date,
   },
   { timestamps: true }

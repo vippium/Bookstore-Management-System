@@ -12,6 +12,7 @@ import EditBook from "./pages/EditBook";
 import AddBook from "./pages/AddBook";
 import OrderSuccess from "./pages/OrderSuccess";
 import Profile from "./pages/Profile";
+import Wishlist from "./pages/Wishlist";
 
 
 // New unified route guard
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/books/:id" element={<BookDetails />} />
         <Route path="/order-success" element={<OrderSuccess />} />
+        <Route path="/wishlist" element={<Wishlist />} />
 
         {/* Protected Routes (any authenticated user) */}
         <Route element={<ProtectedRoute />}>

@@ -146,7 +146,7 @@ const getUserOrderStats = async (req, res) => {
   try {
     console.log("🔐 Authenticated user:", req.user);
 
-    const orders = await Order.find({ user: req.user._id });
+    const orders = await Order.find({ userId: req.user._id });
 
     console.log(`📦 Found ${orders.length} orders for user ${req.user._id}`);
     console.log("🧾 Sample order:", orders[0]);

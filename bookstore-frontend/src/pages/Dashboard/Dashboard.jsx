@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import AuthContext from "../../context/AuthContext";
-import {UserCircle,ListOrdered,BarChartBig} from "lucide-react";
+import { UserCircle, ListOrdered, BarChartBig, User2 } from "lucide-react";
 import MyOrders from "./MyOrders";
 import UserOrdersChart from "../../components/UserOrdersChart";
 
@@ -9,7 +9,14 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-6 animate-fade-in">
-      <div className="relative bg-white border border-blue-100 rounded-3xl shadow-md p-6 hover:shadow-xl hover:ring-1 hover:ring-blue-500 transition-all hover:scale-x-105 duration-300">
+      <div className="relative bg-white border border-blue-100 rounded-3xl shadow-md p-6 hover:shadow-xl hover:ring-1 hover:ring-blue-500 transition-all hover:scale-[1.02] duration-300">
+
+        {/* 🏷️ Role Badge */}
+        <span className="absolute top-4 right-4 text-xs px-3 py-1 rounded-full font-medium shadow-sm flex items-center gap-1 bg-blue-100 text-blue-700">
+          <User2 className="w-3.5 h-3.5" />
+          Customer
+        </span>
+
         <div className="flex items-center gap-3 mb-4">
           <UserCircle className="w-6 h-6 text-blue-600" />
           <h2 className="text-xl font-semibold text-blue-700">User Info</h2>
@@ -37,11 +44,11 @@ export default function Dashboard() {
             Delete Account
           </button>
         </div>
-        
-      </div>
-      
 
-      <div className="bg-white border border-blue-100 rounded-2xl shadow-md p-6 hover:scale-105 duration-300 hover:shadow-xl hover:ring-1 hover:ring-blue-500">
+      </div>
+
+
+      <div className="bg-white border border-blue-100 rounded-2xl shadow-md p-6 hover:scale-[1.02] duration-300 hover:shadow-xl hover:ring-1 hover:ring-blue-500">
         <div className="flex items-center gap-3 mb-4">
           <ListOrdered className="w-6 h-6 text-blue-600" />
           <h2 className="text-xl font-semibold text-blue-700">My Orders</h2>
@@ -49,12 +56,12 @@ export default function Dashboard() {
         <MyOrders />
       </div>
 
-      <div className="bg-white border border-blue-100 rounded-2xl shadow-md p-6 hover:scale-105 duration-300 hover:shadow-xl hover:ring-1 hover:ring-blue-500">
+      <div className="bg-white border border-blue-100 rounded-2xl shadow-md p-6 hover:scale-[1.02] duration-300 hover:shadow-xl hover:ring-1 hover:ring-blue-500">
         <div className="flex items-center gap-3 mb-4">
           <BarChartBig className="w-6 h-6 text-blue-600" />
           <h2 className="text-xl font-semibold text-blue-700">Order Summary</h2>
+          <UserOrdersChart />
         </div>
-        <UserOrdersChart />
       </div>
     </div>
   );

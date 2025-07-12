@@ -1,6 +1,15 @@
 import { useEffect, useState, useContext, useRef } from "react";
 import api from "../../services/axios";
-import { Loader, Download, Repeat } from "lucide-react";
+import {
+  Loader,
+  Download,
+  Repeat,
+  CheckCircle, // For delivered
+  Truck,        // For shipped
+  Hourglass,    // For processing
+  XCircle,      // For cancelled
+  Clock         // Default or pending
+} from "lucide-react"; // Import new icons
 import CartContext from "../../context/CartContext";
 import { useReactToPrint } from "react-to-print";
 import InvoiceCard from "../../components/InvoiceCard";
@@ -44,17 +53,18 @@ export default function MyOrders() {
   };
 
   const getStatusIcon = (status) => {
+    const iconProps = { className: "w-4 h-4 inline-block mr-1" }; // Standard props for all icons
     switch (status) {
       case "delivered":
-        return "✅";
+        return <CheckCircle {...iconProps} />;
       case "processing":
-        return "⏳";
+        return <Hourglass {...iconProps} />;
       case "shipped":
-        return "📦";
+        return <Truck {...iconProps} />;
       case "cancelled":
-        return "❌";
+        return <XCircle {...iconProps} />;
       default:
-        return "🕓";
+        return <Clock {...iconProps} />;
     }
   };
 
@@ -119,11 +129,11 @@ export default function MyOrders() {
 
               <div className="flex justify-between items-center">
                 <span
-                  className={`text-xs px-2 py-1 rounded-full font-medium ${getStatusStyle(order.status)}`}
+                  className={`text-xs px-2 py-1 rounded-full font-medium flex items-center ${getStatusStyle(order.status)}`}
                 >
                   {getStatusIcon(order.status)} {order.status}
                 </span>
-                <span className="text-sm text-blue-800 font-semibold">
+                <span className="text-lg text-blue-800 font-semibold">
                   ₹{order.total.toFixed(2)}
                 </span>
               </div>

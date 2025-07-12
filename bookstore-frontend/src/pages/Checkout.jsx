@@ -94,7 +94,7 @@ export default function Checkout() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto px-4 md:px-0 py-3">
 
         {/* Order Summary */}
-        <div className="bg-white p-6 rounded-3xl shadow-md border border-blue-100 order-1 md:order-2 hover:scale-105 transition-all duration-300">
+        <div className="bg-white p-6 rounded-3xl shadow-md border border-blue-100 order-1 md:order-2 hover:scale-[1.03] transition-all duration-300">
           <h3 className="text-xl font-bold text-blue-700 mb-6 flex items-center gap-2">
             <FileText className="w-5 h-5" />
             Order Summary
@@ -149,7 +149,7 @@ export default function Checkout() {
         </div>
 
         {/* Delivery Form */}
-        <div className="bg-white p-6 rounded-3xl shadow-md border border-blue-100 order-2 md:order-1 hover:scale-105 transition-all duration-300">
+        <div className="bg-white p-6 rounded-3xl shadow-md border border-blue-100 order-2 md:order-1 hover:scale-[1.03] transition-all duration-300">
           <h3 className="text-xl font-bold text-blue-700 mb-6 flex items-center gap-2">
             <PackageCheck className="w-5 h-5" />
             Delivery Details
