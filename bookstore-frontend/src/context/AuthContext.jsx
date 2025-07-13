@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import api from "../services/axios";
 import { jwtDecode } from "jwt-decode";
-import { toast } from "react-hot-toast";
+import { toast } from "react-hot-toast"; // Keep toast import for logout and error messages
 
 const AuthContext = createContext(null);
 
@@ -18,13 +18,13 @@ export const AuthProvider = ({ children }) => {
         const decoded = jwtDecode(token);
         if (decoded.exp * 1000 < Date.now()) {
           console.log("Token expired, logging out.");
-          logout();
+          logout(); // This logout will also show a toast
           setLoadingAuth(false);
           return;
         }
       } catch (e) {
         console.error("Invalid token, logging out:", e);
-        logout();
+        logout(); // This logout will also show a toast
         setLoadingAuth(false);
         return;
       }
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
         })
         .catch((error) => {
           console.error("Failed to fetch user on mount:", error);
-          logout();
+          logout(); // This logout will also show a toast
         })
         .finally(() => setLoadingAuth(false));
     } else {
@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }) => {
       const userRes = await api.get("/auth/me");
       setUser(userRes.data.user);
       setIsLoggedIn(true);
-      toast.success("Logged in successfully!");
+      // Removed: toast.success("Logged in successfully!"); // This was causing the double toast
       return true;
     } catch (err) {
       console.error("Login failed:", err.response?.data?.message || err.message);

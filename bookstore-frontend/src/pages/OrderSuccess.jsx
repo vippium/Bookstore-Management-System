@@ -13,7 +13,7 @@ export default function OrderSuccess() {
 
       <div className="flex gap-4">
         <Link
-          to="/my-orders"
+          to="/dashboard"
           className="px-5 py-2 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
         >
           View Orders

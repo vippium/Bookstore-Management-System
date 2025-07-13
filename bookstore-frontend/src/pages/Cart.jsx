@@ -5,14 +5,12 @@ import { ShoppingCart, Trash2 } from "lucide-react";
 import Breadcrumb from "../components/Breadcrumb";
 
 export default function Cart() {
-  const { cartItems, updateQuantity, removeFromCart, loadingCart } = useContext(CartContext); // Corrected: Destructure cartItems and loadingCart
+  const { cartItems, updateQuantity, removeFromCart, loadingCart } = useContext(CartContext);
 
-  // Safely calculate total, ensuring cartItems is available and not loading
-  const total = loadingCart ? 0 : cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const holdRef = useRef(null);
   const [shakeId, setShakeId] = useState(null);
   const navigate = useNavigate();
-
 
   const startHold = (callback, condition, id) => {
     if (condition) {
@@ -32,9 +30,7 @@ export default function Cart() {
     <div className="max-w-5xl mx-auto p-6 animate-fade-in">
       <Breadcrumb current="Your Cart" icon={<ShoppingCart className="w-6 h-6 mr-1" />} />
 
-      {loadingCart ? (
-        <div className="text-center py-20 text-gray-500">Loading cart...</div>
-      ) : cartItems.length === 0 ? ( // Use cartItems here
+      {cartItems.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center text-gray-500 py-20 animate-zoom-in">
           <ShoppingCart className="w-16 h-16 mb-4 text-blue-200" />
           <h2 className="text-2xl font-semibold mb-2 text-blue-700">
@@ -52,10 +48,9 @@ export default function Cart() {
         </div>
       ) : (
         <div className="space-y-6">
-          {cartItems.map((item) => { // Use cartItems here
+          {cartItems.map((item) => {
             const isMin = item.quantity <= 1;
-            // Assuming 'stock' comes from the item data; ensure it's available or set a default
-            const isMax = item.stock ? item.quantity >= item.stock : false; // Added check for item.stock
+            const isMax = item.stock ? item.quantity >= item.stock : false;
             const minKey = `${item._id}-min`;
             const maxKey = `${item._id}-max`;
 
@@ -158,7 +153,7 @@ export default function Cart() {
 
           <div className="text-right">
             <button
-              disabled={cartItems.length === 0} // Use cartItems here
+              disabled={cartItems.length === 0}
               onClick={() => navigate("/checkout")}
               className="mt-4 px-6 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 font-semibold transition disabled:opacity-40"
             >

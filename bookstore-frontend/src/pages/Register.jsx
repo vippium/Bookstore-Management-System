@@ -1,8 +1,37 @@
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
-import { Eye, EyeOff, UserPlus, User, Mail, Lock, Loader, CheckCircle, XCircle } from "lucide-react"; // Added icons
-import toast from "react-hot-toast"; // For toast notifications
+import { Eye, EyeOff, UserPlus, User, Mail, Lock, Loader, CheckCircle, XCircle } from "lucide-react";
+import toast from "react-hot-toast";
+
+// List of common temporary email domains
+const TEMPORARY_EMAIL_DOMAINS = [
+  "mailinator.com", "temp-mail.org", "guerrillamail.com", "mail.tm",
+  "yopmail.com", "10minutemail.com", "tempmail.org", "tempmail.com",
+  "disposablemail.com", "sharklasers.com", "grr.la", "pokemail.net",
+  "trashmail.com", "moakt.com", "maildrop.cc", "spamgourmet.com",
+  "getnada.com", "mail.ch", "dropmail.me", "temp-mail.ru", "tmail.ws",
+  "emailondeck.com", "anonbox.net", "meltmail.com", "mytrashmail.com",
+  "mailnesia.com", "tempinbox.com", "tempmailo.com", "0-mail.com",
+  "fleckens.hu", "hulapla.de", "jourrapide.com", "kasmail.com",
+  "linkto.ws", "mail.by", "mail.wtf", "mail.zp.ua", "mailcatch.com",
+  "mailmoat.com", "mailna.biz", "mailna.me", "mailsac.com", "mailscrap.com",
+  "mailtemp.net", "mailto.ws", "mistergf.net", "mr.us.to", "mx.vc",
+  "my.rt.ru", "my.vc", "nospammail.net", "nowmymail.com", "oopi.me",
+  "pancakemail.com", "privacy.net", "proxymail.eu", "quad.me", "rcpt.at",
+  "recode.me", "rhyta.com", "s0ny.net", "sendspamhere.com", "sharkz.de",
+  "smellfear.com", "snakemail.com", "sogetthis.com", "soodonims.com",
+  "spam.la", "spambox.us", "spamcero.com", "spamherelots.com",
+  "spamhole.com", "spaml.com", "spamobox.com", "spamspot.com",
+  "temp-mail.com", "temp-mail.net", "temp-mail.org", "temp.bot",
+  "temporaryemail.net", "temporaryinbox.com", "tempmail.io", "tempmail.us",
+  "test.com", "thisisnotmyrealemail.com", "thrma.com", "tmpbox.net",
+  "tracemail.info", "trash-mail.com", "trashmail.me", "trashymail.com",
+  "tyldum.com", "unmail.ru", "user.lt", "venomail.com", "wegwerfmail.de",
+  "wetrain.cc", "whyspam.me", "xag0.com", "xents.com", "xmaily.com",
+  "yapped.net", "yep.it", "zippymail.info", "zoemail.org"
+];
+
 
 export default function Register() {
   const { register } = useContext(AuthContext);
@@ -17,7 +46,7 @@ export default function Register() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
-    setErrors({ ...errors, [name]: "" });
+    setErrors({ ...errors, [name]: "" }); // Clear error when typing
     if (name === "password") updatePasswordStrength(value);
   };
 
@@ -29,10 +58,22 @@ export default function Register() {
     return setPasswordStrength("medium");
   };
 
+  const isTemporaryEmail = (email) => {
+    const domain = email.split('@')[1];
+    return TEMPORARY_EMAIL_DOMAINS.includes(domain);
+  };
+
   const validate = () => {
     const errs = {};
     if (!form.name.trim()) errs.name = "Name is required";
-    if (!form.email.trim()) errs.email = "Email is required";
+    if (!form.email.trim()) {
+      errs.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      errs.email = "Invalid email format";
+    } else if (isTemporaryEmail(form.email)) {
+      errs.email = "Temporary email addresses are not allowed";
+    }
+
     if (!form.password) errs.password = "Password is required";
     if (passwordStrength === "weak") errs.password = "Password is too weak";
     setErrors(errs);

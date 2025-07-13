@@ -1,14 +1,14 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import CartContext from "../context/CartContext";
 import api from "../services/axios";
-import { ShoppingBag, FileText, PackageCheck, CheckCircle } from "lucide-react";
+import { ShoppingBag, FileText, PackageCheck } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function Checkout() {
   const { user } = useContext(AuthContext);
-  const { cart, total: cartTotal, clearCart, removeFromCart } = useContext(CartContext);
+  const { cartItems, total: cartTotal, clearCart, removeFromCart } = useContext(CartContext);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -21,7 +21,7 @@ export default function Checkout() {
         quantity,
         bookId: buyNowItem._id,
       }]
-    : cart;
+    : cartItems;
 
   const total = buyNowItem
     ? buyNowItem.price * quantity
@@ -37,10 +37,16 @@ export default function Checkout() {
 
   const [errors, setErrors] = useState({});
 
+  // 🔁 Redirect to cart if checkout is empty
+  useEffect(() => {
+    if (!buyNowItem && (!cartItems || cartItems.length === 0)) {
+      navigate("/cart");
+    }
+  }, [buyNowItem, cartItems, navigate]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -74,13 +80,13 @@ export default function Checkout() {
     };
 
     try {
-      await api.post("/orders", orderData);
-      toast.success("✅ Order placed!");
+      const response = await api.post("/orders", orderData);
+      toast.success("Order placed!");
       if (!buyNowItem) clearCart();
-      navigate("/order-success", { state: { orderId: order._id } });
+      navigate("/order-success", { state: { orderId: response.data.order._id } });
     } catch (err) {
       const msg = err.response?.data?.message || "Failed to place order";
-      toast.error("❌ Order failed: " + msg);
+      toast.error("Order failed: " + msg);
     }
   };
 
@@ -92,8 +98,7 @@ export default function Checkout() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto px-4 md:px-0 py-3">
-
-        {/* Order Summary */}
+        {/* 🧾 Order Summary */}
         <div className="bg-white p-6 rounded-3xl shadow-md border border-blue-100 order-1 md:order-2 hover:scale-[1.03] transition-all duration-300">
           <h3 className="text-xl font-bold text-blue-700 mb-6 flex items-center gap-2">
             <FileText className="w-5 h-5" />
@@ -131,9 +136,7 @@ export default function Checkout() {
                   className="w-16 h-20 object-cover rounded"
                 />
                 <div className="flex-1">
-                  <h4 className="text-sm font-semibold text-gray-800 leading-tight">
-                    {item.title}
-                  </h4>
+                  <h4 className="text-sm font-semibold text-gray-800 leading-tight">{item.title}</h4>
                   <p className="text-xs text-gray-500">{item.author}</p>
                   <p className="text-sm text-blue-700 font-medium mt-1">
                     ₹{item.price} × {item.quantity}
@@ -144,11 +147,11 @@ export default function Checkout() {
           </div>
 
           <div className="mt-6 text-right text-lg text-blue-800 font-semibold">
-            Total: ₹{total.toFixed(2)}
+            Total: ₹{total ? total.toFixed(2) : "0.00"}
           </div>
         </div>
 
-        {/* Delivery Form */}
+        {/* 📦 Delivery Form */}
         <div className="bg-white p-6 rounded-3xl shadow-md border border-blue-100 order-2 md:order-1 hover:scale-[1.03] transition-all duration-300">
           <h3 className="text-xl font-bold text-blue-700 mb-6 flex items-center gap-2">
             <PackageCheck className="w-5 h-5" />
@@ -161,25 +164,17 @@ export default function Checkout() {
                 {field === "postalCode" ? "Postal Code" : field}
               </label>
 
-              <div className="relative">
-                <input
-                  type={field === "email" ? "email" : "text"}
-                  name={field}
-                  value={form[field]}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-2 pr-10 rounded-lg shadow-sm text-sm transition-all focus:outline-none focus:ring-2 ${
-                    errors[field]
-                      ? "border-red-400 focus:ring-red-300"
-                      : "border border-gray-300 focus:ring-blue-400"
-                  }`}
-                />
-                {form[field].trim() && !errors[field] && (
-                  <CheckCircle
-                    className="w-5 h-5 text-green-500 absolute right-3 top-1/4 pointer-events-none animate-zoom-in"
-                    strokeWidth={2}
-                  />
-                )}
-              </div>
+              <input
+                type={field === "email" ? "email" : "text"}
+                name={field}
+                value={form[field]}
+                onChange={handleChange}
+                className={`w-full px-4 py-2 pr-10 rounded-lg shadow-sm text-sm transition-all focus:outline-none focus:ring-2 ${
+                  errors[field]
+                    ? "border-red-400 focus:ring-red-300"
+                    : "border border-gray-300 focus:ring-blue-400"
+                }`}
+              />
 
               <p
                 className={`text-xs mt-1 min-h-[1rem] transition-all duration-200 ${

@@ -138,7 +138,7 @@ export default function AdminOrderPanel() {
             <button
               key={status}
               onClick={() => setFilter(status)}
-              className={`px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 transition 
+              className={`px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 transition
                 ${
                   isActive
                     ? `${badgeClass} ring-2 ring-offset-1 ring-${opt?.color}-300`
@@ -159,6 +159,13 @@ export default function AdminOrderPanel() {
             (s) => s.value === order.status
           );
           const badge = getStatusStyle(order.status);
+
+          // Safely calculate item total
+          const itemTotal = (item) => {
+            const price = item.price ?? 0;
+            const quantity = item.quantity ?? 0;
+            return (price * quantity).toFixed(2);
+          };
 
           return (
             <div
@@ -186,7 +193,7 @@ export default function AdminOrderPanel() {
                   </div>
 
                   <span className="text-sm text-blue-800 font-semibold">
-                    ₹{order.total.toFixed(2)}
+                    ₹{(order.total ?? 0).toFixed(2)}
                   </span>
                 </div>
 
@@ -211,11 +218,15 @@ export default function AdminOrderPanel() {
               </div>
 
               <ul className="list-disc ml-5 text-sm text-gray-700 space-y-1">
-                {order.items.map((item, idx) => (
-                  <li key={idx}>
-                    {item.title} × {item.quantity}
-                  </li>
-                ))}
+                {order.items && order.items.length > 0 ? (
+                  order.items.map((item, idx) => (
+                    <li key={idx}>
+                      {item.title} × {item.quantity ?? 0} (₹{itemTotal(item)})
+                    </li>
+                  ))
+                ) : (
+                  <li>No items found for this order.</li>
+                )}
               </ul>
             </div>
           );

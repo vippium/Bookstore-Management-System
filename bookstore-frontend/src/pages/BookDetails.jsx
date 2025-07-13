@@ -6,7 +6,7 @@ import AuthContext from "../context/AuthContext";
 import WishlistContext from "../context/WishlistContext";
 import Breadcrumb from "../components/Breadcrumb";
 import StarRating from "../components/StarRating";
-import { BookOpen, Book, BadgeCheck, Loader, Minus, Plus, Heart, XCircle } from "lucide-react";
+import { BookOpen, Book, BadgeCheck, Minus, Plus, Heart, XCircle } from "lucide-react";
 import Tippy from "@tippyjs/react";
 import toast from "react-hot-toast";
 import "tippy.js/dist/tippy.css";
@@ -26,7 +26,6 @@ export default function BookDetails() {
   const [reviews, setReviews] = useState([]);
   const [isWishlisted, setIsWishlisted] = useState(false);
 
-  // Fetch book details
   useEffect(() => {
     api.get(`/books/${id}`).then((res) => setBook(res.data)).catch(console.error);
     fetchReviews();
@@ -59,12 +58,11 @@ export default function BookDetails() {
   };
 
   const handleAddToCart = () => {
-    addToCart({ ...book, quantity });
+    addToCart(book, quantity);
     setAnimateCart(true);
     setTimeout(() => setAnimateCart(false), 300);
   };
 
-  // Handle Add/Remove from Wishlist
   const handleToggleWishlist = async () => {
     if (!user) {
       toast.error("Please login to manage your wishlist.", { icon: <XCircle size={20} className="text-red-500" /> });
@@ -78,12 +76,7 @@ export default function BookDetails() {
   };
 
   if (!book) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <Loader className="w-6 h-6 animate-spin text-blue-600" />
-        <span className="ml-2 text-gray-600">Loading book...</span>
-      </div>
-    );
+    return null; // App.jsx handles global loader
   }
 
   const shortDesc = book.description?.slice(0, 150) || "";
@@ -114,7 +107,6 @@ export default function BookDetails() {
               <span className="text-2xl font-bold">{book.title}</span>
             </div>
 
-            {/* NEW: StarRating for display only, under the title */}
             <div className="text-yellow-600 text-sm mt-1 mb-2">
                 <StarRating bookId={book._id} readOnly={true} />
             </div>
@@ -143,7 +135,7 @@ export default function BookDetails() {
               )}
             </p>
 
-            {/*Book Description */}
+            {/* Book Description */}
             {book.description && (
               <div className="mt-4 text-sm text-gray-600 leading-relaxed">
                 {showFullDesc ? book.description : shortDesc + "..."}
@@ -178,7 +170,7 @@ export default function BookDetails() {
             </button>
           </div>
 
-          {/* 🛒 Action Buttons & Wishlist Button */}
+          {/* Action Buttons & Wishlist Button */}
           <div className="flex gap-3 flex-wrap mt-4">
             <Tippy
               content={!user ? "Login to add to cart" : book.stock < 1 ? "Out of stock" : ""}
@@ -220,7 +212,7 @@ export default function BookDetails() {
               </button>
             </Tippy>
 
-            {/*Wishlist Button */}
+            {/* Wishlist Button */}
             <Tippy
               content={!user ? "Login to manage wishlist" : isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
               disabled={!user}
@@ -250,7 +242,7 @@ export default function BookDetails() {
         </div>
       </div>
 
-      {/* 💬 Reviews Section */}
+      {/* Reviews Section */}
       <div className="max-w-5xl mx-auto mt-8 p-4 bg-white rounded-xl shadow-sm border">
         <h3 className="text-lg font-semibold text-blue-700 mb-3">User Reviews</h3>
 

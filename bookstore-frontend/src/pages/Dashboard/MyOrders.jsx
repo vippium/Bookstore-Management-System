@@ -4,12 +4,12 @@ import {
   Loader,
   Download,
   Repeat,
-  CheckCircle, // For delivered
-  Truck,        // For shipped
-  Hourglass,    // For processing
-  XCircle,      // For cancelled
-  Clock         // Default or pending
-} from "lucide-react"; // Import new icons
+  CheckCircle,
+  Truck,
+  Hourglass,
+  XCircle,
+  Clock
+} from "lucide-react";
 import CartContext from "../../context/CartContext";
 import { useReactToPrint } from "react-to-print";
 import InvoiceCard from "../../components/InvoiceCard";
@@ -53,7 +53,7 @@ export default function MyOrders() {
   };
 
   const getStatusIcon = (status) => {
-    const iconProps = { className: "w-4 h-4 inline-block mr-1" }; // Standard props for all icons
+    const iconProps = { className: "w-4 h-4 inline-block mr-1" };
     switch (status) {
       case "delivered":
         return <CheckCircle {...iconProps} />;
@@ -134,16 +134,20 @@ export default function MyOrders() {
                   {getStatusIcon(order.status)} {order.status}
                 </span>
                 <span className="text-lg text-blue-800 font-semibold">
-                  ₹{order.total.toFixed(2)}
+                  ₹{(order.total ?? 0).toFixed(2)}
                 </span>
               </div>
 
               <ul className="list-disc ml-5 text-sm text-gray-700 space-y-1">
-                {order.items.map((item, idx) => (
-                  <li key={idx}>
-                    {item.title} × {item.quantity}
-                  </li>
-                ))}
+                {order.items && order.items.length > 0 ? (
+                  order.items.map((item, idx) => (
+                    <li key={idx}>
+                      {item.title} × {item.quantity ?? 0}
+                    </li>
+                  ))
+                ) : (
+                  <li>No items found for this order.</li>
+                )}
               </ul>
 
               <div className="flex gap-3 text-xs mt-2">

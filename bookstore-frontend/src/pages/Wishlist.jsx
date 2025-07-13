@@ -1,23 +1,15 @@
 import { useContext } from "react";
 import WishlistContext from "../context/WishlistContext";
-import { Trash2, Heart, Frown, Loader } from "lucide-react"; // Import Loader for loading state
-import { Link } from "react-router-dom"; // Import Link for clickable book image/title
+import { Trash2, Heart, Frown } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Wishlist() {
   const { wishlist, loadingWishlist, removeFromWishlist } = useContext(WishlistContext);
 
-  // Loading state
   if (loadingWishlist) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <p className="text-center text-gray-600 flex items-center gap-2">
-          <Loader className="w-6 h-6 animate-spin text-blue-600" /> Loading your wishlist...
-        </p>
-      </div>
-    );
+    return null;
   }
 
-  // Empty wishlist state
   if (wishlist.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-64 text-gray-600 mt-10 p-4 bg-white rounded-xl shadow-sm border border-gray-100">
@@ -30,6 +22,7 @@ export default function Wishlist() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6 animate-fade-in">
+
       {/* Wishlist Header */}
       <h2 className="text-3xl font-bold text-blue-700 mb-6 flex items-center gap-3">
         <Heart className="w-8 h-8 text-pink-500 fill-pink-500" /> Your Wishlist
@@ -46,6 +39,7 @@ export default function Wishlist() {
               <img
                 src={item.book.imageUrl || "/placeholder.jpeg"}
                 alt={item.book.title}
+                onError={(e) => (e.target.src = "/placeholder.jpeg")}
                 className="w-16 h-24 object-cover rounded-lg shadow-sm"
               />
               <div className="flex-1">

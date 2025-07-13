@@ -30,12 +30,12 @@ export default function EditBook() {
     }
   };
 
-  if (!initialData) return <div className="text-center py-10">Loading...</div>;
+  if (!initialData) return null;
 
   return (
     <div className="max-w-2xl mx-auto p-6">
       {/* Icon + Title */}
-      <div className="flex items-center gap-2 mb-4 text-yellow-600">
+      <div className="flex items-center justify-center gap-2 mb-4 text-yellow-600">
         <PencilLine className="w-6 h-6" />
         <h2 className="text-lg font-bold">Edit Book</h2>
       </div>

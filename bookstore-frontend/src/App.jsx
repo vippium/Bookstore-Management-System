@@ -1,4 +1,6 @@
-import {BrowserRouter as Router,Routes,Route,Navigate,} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useContext } from "react"; // 
+import AuthContext from "./context/AuthContext"; 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -13,12 +15,20 @@ import AddBook from "./pages/AddBook";
 import OrderSuccess from "./pages/OrderSuccess";
 import Profile from "./pages/Profile";
 import Wishlist from "./pages/Wishlist";
-
-
-// New unified route guard
 import ProtectedRoute from "./components/ProtectedRoute";
+import { Loader } from "lucide-react";
 
 export default function App() {
+  const { loadingAuth } = useContext(AuthContext);
+
+  if (loadingAuth) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <Loader className="w-10 h-10 animate-spin text-blue-600" />
+        <span className="ml-3 text-lg text-gray-600">Loading...</span>
+      </div>
+    );
+  }
 
   return (
     <Router>
@@ -45,7 +55,6 @@ export default function App() {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/books/:id/edit" element={<EditBook />} />
           <Route path="/admin/books/new" element={<AddBook />} />
-
         </Route>
       </Routes>
     </Router>

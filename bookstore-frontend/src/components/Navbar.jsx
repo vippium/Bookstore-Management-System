@@ -2,18 +2,8 @@ import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import CartContext from "../context/CartContext";
-import {
-  ShoppingCart,
-  LogOut,
-  LogIn,
-  LayoutDashboard,
-  Waypoints,
-  User2,
-  ChevronDown,
-  UserRoundPlus,
-  Heart,
-  UserRoundPen,
-} from "lucide-react";
+import {ShoppingCart,LogOut,LogIn,LayoutDashboard,Waypoints,User2,ChevronDown,UserRoundPlus,Heart,
+UserRoundPen,} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
@@ -55,9 +45,9 @@ export default function Navbar() {
   return (
     <nav className="bg-white shadow-lg sticky top-0 z-50">
       <div className="max-w-6xl mx-auto flex items-center justify-between p-4">
-        {/* Bookstore Logo */}
+        {/* Bookstore Logo - Now with emoji */}
         <NavLink to="/" className="flex items-center gap-2 text-2xl font-bold text-blue-700">
-          <img src="/my-logo.png" alt="Bookstore Logo" className="w-8 h-8 object-contain" />
+          <span className="text-3xl">📚</span> {/* Replaced img with emoji */}
           Vipin's Bookstore
         </NavLink>
 
