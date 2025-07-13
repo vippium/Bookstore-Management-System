@@ -8,7 +8,7 @@ const bookSchema = new mongoose.Schema({
   stock: Number,
   ISBN: String,
   description: String,
-  imageUrl: String // ✅ this must be included
+  imageUrl: String,
 });
 
 module.exports = mongoose.model("Book", bookSchema);

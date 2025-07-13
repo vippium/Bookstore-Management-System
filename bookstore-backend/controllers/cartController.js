@@ -1,6 +1,5 @@
 const Cart = require("../models/cartModel");
 
-// 📥 Get Cart Items
 const getCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ user: req.user._id });
@@ -10,7 +9,6 @@ const getCart = async (req, res) => {
   }
 };
 
-// 💾 Save or Update Cart
 const saveCart = async (req, res) => {
   try {
     const { items } = req.body;
@@ -28,11 +26,12 @@ const saveCart = async (req, res) => {
     res.json({ message: "Cart saved" });
   } catch (err) {
     console.error("🛑 Save cart error:", err.message);
-    res.status(500).json({ message: "Failed to save cart", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to save cart", error: err.message });
   }
 };
 
-// 🧹 Clear Cart
 const clearCart = async (req, res) => {
   try {
     await Cart.findOneAndDelete({ user: req.user._id });

@@ -1,4 +1,4 @@
-import api from "./axios"; // we'll create this next
+import api from "./axios";
 
 export const loginUser = async (email, password) => {
   const res = await api.post("/auth/login", { email, password });

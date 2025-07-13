@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @keyframes fade-in {
   from {
     transform: scale(95%);
@@ -18,18 +17,27 @@
   animation: fade-in 0.2s ease-out forwards;
 }
 
-
 @layer utilities {
   .animate-shake {
     animation: shake 0.4s ease;
   }
 
   @keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-3px); }
-    50% { transform: translateX(3px); }
-    75% { transform: translateX(-2px); }
-    100% { transform: translateX(0); }
+    0% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-3px);
+    }
+    50% {
+      transform: translateX(3px);
+    }
+    75% {
+      transform: translateX(-2px);
+    }
+    100% {
+      transform: translateX(0);
+    }
   }
 }
 
@@ -40,13 +48,13 @@
   font-size: 0.75rem;
   background-color: white;
   color: #1f2937;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #e5e7eb;
 }
 
 /* Dark Mode Tooltip */
 .dark .tippy-box {
-  background-color: #1f2937 !important; 
-  color: #f9fafb !important;            
-  border-color: #374151;                 
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+  border-color: #374151;
 }

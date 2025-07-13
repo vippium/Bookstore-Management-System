@@ -11,7 +11,7 @@ const ratingSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    userName: String,  // Store user name/email redundantly for deleted accounts
+    userName: String,
     stars: {
       type: Number,
       min: 1,

@@ -1,29 +1,30 @@
 const Order = require("../models/orderModel");
-const Book = require("../models/bookModel");
 
 const getOrderStats = async (req, res) => {
   try {
-    const last7Days = [...Array(7)].map((_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      return {
-        date: date.toISOString().split("T")[0],
-        orders: 0,
-        revenue: 0,
-      };
-    }).reverse();
+    const last7Days = [...Array(7)]
+      .map((_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        return {
+          date: date.toISOString().split("T")[0],
+          orders: 0,
+          revenue: 0,
+        };
+      })
+      .reverse();
 
     const fromDate = new Date();
     fromDate.setDate(fromDate.getDate() - 6);
     fromDate.setHours(0, 0, 0, 0);
 
     const orders = await Order.find({
-      createdAt: { $gte: fromDate }
+      createdAt: { $gte: fromDate },
     });
 
-    orders.forEach(order => {
+    orders.forEach((order) => {
       const date = new Date(order.createdAt).toISOString().split("T")[0];
-      const dayStat = last7Days.find(day => day.date === date);
+      const dayStat = last7Days.find((day) => day.date === date);
       if (dayStat) {
         dayStat.orders += 1;
         dayStat.revenue += order.total;
@@ -32,7 +33,9 @@ const getOrderStats = async (req, res) => {
 
     res.json(last7Days);
   } catch (err) {
-    res.status(500).json({ message: "Failed to fetch stats", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch stats", error: err.message });
   }
 };
 
@@ -53,7 +56,7 @@ const getTopGenres = async (req, res) => {
         $group: {
           _id: "$bookDetails.genre",
           booksSold: { $sum: "$items.quantity" },
-          revenue: { $sum: { $multiply: ["$items.quantity", "$items.price"] } }
+          revenue: { $sum: { $multiply: ["$items.quantity", "$items.price"] } },
         },
       },
       { $sort: { booksSold: -1 } },
@@ -61,8 +64,10 @@ const getTopGenres = async (req, res) => {
 
     res.json(genreStats);
   } catch (err) {
-    res.status(500).json({ message: "Failed to fetch genre stats", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch genre stats", error: err.message });
   }
 };
 
-module.exports = { getOrderStats, getTopGenres,};
+module.exports = { getOrderStats, getTopGenres };

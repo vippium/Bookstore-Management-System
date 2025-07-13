@@ -139,10 +139,9 @@ export default function AdminOrderPanel() {
               key={status}
               onClick={() => setFilter(status)}
               className={`px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 transition
-                ${
-                  isActive
-                    ? `${badgeClass} ring-2 ring-offset-1 ring-${opt?.color}-300`
-                    : `${badgeClass} hover:opacity-80`
+                ${isActive
+                  ? `${badgeClass} ring-2 ring-offset-1 ring-${opt?.color}-300`
+                  : `${badgeClass} hover:opacity-80`
                 }`}
             >
               {opt?.icon}

@@ -2,7 +2,6 @@ const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// 🔑 Generate JWT Token
 const generateToken = (user) => {
   return jwt.sign(
     { id: user._id, name: user.name, email: user.email, role: user.role },
@@ -11,7 +10,6 @@ const generateToken = (user) => {
   );
 };
 
-// 📝 Register New User
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -41,7 +39,6 @@ const registerUser = async (req, res) => {
   }
 };
 
-// 🔐 Login User
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -50,7 +47,8 @@ const loginUser = async (req, res) => {
     if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
+    if (!isMatch)
+      return res.status(401).json({ message: "Invalid credentials" });
 
     user.lastLogin = new Date();
     await user.save();
@@ -67,7 +65,6 @@ const loginUser = async (req, res) => {
   }
 };
 
-// ❌ Delete Account
 const deleteUser = async (req, res) => {
   try {
     await User.findByIdAndDelete(req.user._id);
@@ -77,7 +74,6 @@ const deleteUser = async (req, res) => {
   }
 };
 
-// ⚙️ Update Name/Email
 const updateProfile = async (req, res) => {
   const { name, email } = req.body;
 
@@ -104,7 +100,6 @@ const updateProfile = async (req, res) => {
   }
 };
 
-// 🙋 Get Authenticated User Info
 const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password");
@@ -118,7 +113,6 @@ const getMe = async (req, res) => {
   }
 };
 
-// 🔐 Change Password
 const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;

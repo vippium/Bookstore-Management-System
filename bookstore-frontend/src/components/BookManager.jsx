@@ -40,7 +40,7 @@ export default function BookManager() {
                 await api.delete(`/books/${bookId}`);
                 toast.success("Book deleted");
 
-                // Optionally show undo for 5 seconds
+                // Show undo for 5 seconds
                 toast((undoToast) => (
                   <div className="text-sm">
                     <span>Undo delete?</span>
@@ -208,8 +208,6 @@ export default function BookManager() {
                   className="w-12 h-16 object-cover rounded shadow"
                 />
               </td>
-
-              {/* 2-line title support */}
               <td className="p-3 font-medium text-gray-800 max-w-[160px]">
                 <div className="line-clamp-2 break-words leading-snug">{book.title}</div>
               </td>
@@ -301,7 +299,7 @@ export default function BookManager() {
                   className="text-blue-600 hover:underline font-medium"
                   onClick={async () => {
                     try {
-                      await api.post("/books", deleted); // restore to DB
+                      await api.post("/books", deleted);
                       setBooks((prev) => [deleted, ...prev]);
                       toast.success("Book restored");
                     } catch {

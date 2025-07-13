@@ -12,7 +12,9 @@ const addToWishlist = async (req, res) => {
     const item = await Wishlist.create({ user: req.user._id, book: bookId });
     res.status(201).json(item);
   } catch (err) {
-    res.status(500).json({ message: "Failed to add to wishlist", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to add to wishlist", error: err.message });
   }
 };
 
@@ -21,7 +23,9 @@ const getMyWishlist = async (req, res) => {
     const items = await Wishlist.find({ user: req.user._id }).populate("book");
     res.json(items);
   } catch (err) {
-    res.status(500).json({ message: "Failed to fetch wishlist", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch wishlist", error: err.message });
   }
 };
 

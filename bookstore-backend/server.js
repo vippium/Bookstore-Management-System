@@ -5,7 +5,7 @@ const connectDB = require("./config/db");
 const orderRoutes = require("./routes/orderRoutes");
 const { protect } = require("./middleware/authMiddleware");
 const analyticsRoutes = require("./routes/analyticsRoutes");
-const authRoutes = require('./routes/authRoutes');
+const authRoutes = require("./routes/authRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes");
 const ratingRoutes = require("./routes/ratingRoutes");
 
@@ -16,7 +16,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 🔒 Auth check route
 app.get("/api/secret", protect, (req, res) => {
   res.json({
     message: `Hello ${req.user.name}, you're logged in.`,
@@ -24,7 +23,6 @@ app.get("/api/secret", protect, (req, res) => {
   });
 });
 
-// 📦 Routes
 app.use("/api/books", require("./routes/bookRoutes"));
 app.use("/api/ratings", ratingRoutes);
 app.use("/api/orders", orderRoutes);
@@ -33,7 +31,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/cart", require("./routes/cartRoutes"));
 
-// ✅ Health check
 app.get("/", (req, res) => {
   res.send("📚 Bookstore API is running...");
 });

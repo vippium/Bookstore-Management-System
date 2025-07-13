@@ -2,7 +2,6 @@ const Order = require("../models/orderModel");
 const sendEmail = require("../utils/sendEmail");
 const PDFDocument = require("pdfkit");
 
-// ✅ Create new order
 const createOrder = async (req, res) => {
   try {
     const { items, address, city, postalCode, total } = req.body;
@@ -20,7 +19,7 @@ const createOrder = async (req, res) => {
       total,
     });
 
-    // Generate PDF invoice
+    // PDF invoice Code :
     const generateInvoiceBuffer = () => {
       return new Promise((resolve) => {
         const doc = new PDFDocument();
@@ -40,11 +39,18 @@ const createOrder = async (req, res) => {
         doc.moveDown();
 
         doc.text("Items:", { underline: true });
-        items.forEach(item => {
-          doc.text(`${item.title} × ${item.quantity} = ₹${(item.quantity * item.price).toFixed(2)}`);
+        items.forEach((item) => {
+          doc.text(
+            `${item.title} × ${item.quantity} = ₹${(
+              item.quantity * item.price
+            ).toFixed(2)}`
+          );
         });
 
-        doc.moveDown().font("Helvetica-Bold").text(`Total: ₹${total.toFixed(2)}`);
+        doc
+          .moveDown()
+          .font("Helvetica-Bold")
+          .text(`Total: ₹${total.toFixed(2)}`);
 
         doc.end();
       });
@@ -52,13 +58,19 @@ const createOrder = async (req, res) => {
 
     const invoiceBuffer = await generateInvoiceBuffer();
 
-    const itemsTable = items.map(item => `
+    const itemsTable = items
+      .map(
+        (item) => `
       <tr>
         <td style="padding:6px 0;">${item.title}</td>
         <td style="padding:6px 0;">${item.quantity}</td>
-        <td style="padding:6px 0;">₹${(item.price * item.quantity).toFixed(2)}</td>
+        <td style="padding:6px 0;">₹${(item.price * item.quantity).toFixed(
+          2
+        )}</td>
       </tr>
-    `).join("");
+    `
+      )
+      .join("");
 
     await sendEmail({
       to: req.user.email,
@@ -81,7 +93,9 @@ const createOrder = async (req, res) => {
             </tbody>
           </table>
 
-          <p style="margin-top:20px;"><strong>Grand Total:</strong> ₹${total.toFixed(2)}</p>
+          <p style="margin-top:20px;"><strong>Grand Total:</strong> ₹${total.toFixed(
+            2
+          )}</p>
           <p style="margin-top:30px;color:#555;">We've attached a PDF invoice for your records.<br/>Your books will be shipped soon. 📬</p>
           <p style="margin-top:10px;color:#555;">– Bookstore Team</p>
         </div>
@@ -90,38 +104,45 @@ const createOrder = async (req, res) => {
         {
           filename: "Invoice.pdf",
           content: invoiceBuffer,
-          contentType: "application/pdf"
-        }
-      ]
+          contentType: "application/pdf",
+        },
+      ],
     });
 
-    res.status(201).json({ order }); // Ensure 'order' is wrapped in an object for consistency with frontend expectation
+    res.status(201).json({ order });
   } catch (err) {
-    res.status(500).json({ message: "Order creation failed", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Order creation failed", error: err.message });
   }
 };
 
-// ✅ Get user's own orders
 const getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.user._id }).sort({ createdAt: -1 });
+    const orders = await Order.find({ userId: req.user._id }).sort({
+      createdAt: -1,
+    });
     res.json(orders);
   } catch (err) {
-    res.status(500).json({ message: "Failed to fetch orders", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch orders", error: err.message });
   }
 };
 
-// ✅ Admin: Get all orders
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate("userId", "name email").sort({ createdAt: -1 });
+    const orders = await Order.find()
+      .populate("userId", "name email")
+      .sort({ createdAt: -1 });
     res.json(orders);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching orders", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching orders", error: err.message });
   }
 };
 
-// ✅ Admin: Update order status
 const updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -136,12 +157,12 @@ const updateOrderStatus = async (req, res) => {
 
     res.json(updated);
   } catch (err) {
-    res.status(500).json({ message: "Failed to update status", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to update status", error: err.message });
   }
 };
 
-
-// ✅ Get user's own Order's Stats
 const getUserOrderStats = async (req, res) => {
   try {
     console.log("🔐 Authenticated user:", req.user);
@@ -168,10 +189,11 @@ const getUserOrderStats = async (req, res) => {
     res.json(result);
   } catch (err) {
     console.error("❌ Error in getUserOrderStats:", err.message);
-    res.status(500).json({ message: "Failed to load user order stats", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to load user order stats", error: err.message });
   }
 };
-
 
 module.exports = {
   createOrder,

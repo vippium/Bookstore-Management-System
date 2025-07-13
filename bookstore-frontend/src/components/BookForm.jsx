@@ -64,7 +64,7 @@ export default function BookForm({ initialData = {}, onSubmit, loading }) {
 
   return (
     <>
-<form
+      <form
         onSubmit={handleSubmit}
         className="bg-white border border-gray-100 rounded-xl shadow-lg p-7 space-y-5 max-w-xl mx-auto"
       >
@@ -105,7 +105,7 @@ export default function BookForm({ initialData = {}, onSubmit, loading }) {
             </div>
           ))}
 
-          {/* Price + Stock side by side */}
+          {/* Price + Stock*/}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">Price (₹)</label>
