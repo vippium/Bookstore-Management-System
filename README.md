@@ -2,12 +2,7 @@
 
 <p id="description">A full-featured e-commerce bookstore built with React Node.js Express and MongoDB offering secure authentication shopping cart admin tools and real-time order management.</p>
 
-<h2>🚀 Demo</h2>
 
-[https://bookstore-vippium.vercel.app/](https://bookstore-vippium.vercel.app/)
-
-  
-  
 <h2>🧐 Features</h2>
 
 Here're some of the project's best features:
