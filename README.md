@@ -7,8 +7,8 @@
 
 Here're some of the project's best features:
 
-*   Secure register/login (JWT)
-*   Persistent cart (guest & user)
+*   Secure register/login (JWT-based)
+*   Persistent cart (Guest & User)
 *   Profile updates password change
 *   Add to cart / Buy now with Quantity editing & removal
 *   Order placement with PDF invoice
@@ -22,13 +22,22 @@ Here're some of the project's best features:
 
 Technologies used in the project:
 
-*   React (Vite)
-*   TailwindCSS
-*   Axios
-*   React Router
-*   Lucide Icons
-*   Framer Motion
-*   Node.js + Express
-*   MongoDB + Mongoose
-*   JSON Web Tokens (JWT)
-*   Nodemailer
+**Frontend**
+- React (Vite)
+- TailwindCSS
+- Axios
+- React Router
+- Lucide Icons
+- Framer Motion
+
+**Backend**
+- Node.js + Express
+- MongoDB + Mongoose
+- JSON Web Tokens ***(JWT)***
+- Nodemailer ***(emails)***
+- PDFKit ***(For Invoice PDF)***
+
+**Deployment**
+- Vercel ***(Frontend)***
+- Render ***(Backend)***
+- MongoDB Atlas ***(Database)***
