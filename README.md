@@ -116,6 +116,14 @@ I've used these platforms and libraries in my project :
 
 ---
 
+## 📬 API Testing (Postman)
+
+You can find the Postman collection for testing all backend API endpoints in the [`postman/`](./postman) directory.
+
+> Import it in Postman for ready-to-use request sets.
+
+---
+
 ## 🎗 License
 
 This project is protected under the [MIT](https://choosealicense.com/licenses) License. For more details, refer to the [LICENSE](https://choosealicense.com/licenses/) file.
