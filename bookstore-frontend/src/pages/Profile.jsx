@@ -116,7 +116,7 @@ export default function Profile () {
   }
 
   return (
-    <div className='max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md mt-8 animate-fade-in'>
+    <div className='max-w-xl mx-auto p-6 bg-white rounded-lg shadow-xl mt-8 animate-fade-in'>
       {/* Header */}
       <h2 className='text-2xl font-bold text-blue-700 flex items-center gap-2 mb-6 border-b pb-3'>
         <UserCircle className='w-6 h-6 text-blue-600' />
