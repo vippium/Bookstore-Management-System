@@ -48,6 +48,8 @@
     │   ├── src
     │   ├── tailwind.config.js
     │   └── vite.config.js
+    ├── postman
+    │   ├── bookstore-api.postman_collection.json
     └── package-lock.json
 ```
 
