@@ -61,9 +61,9 @@ export default function Navbar () {
         {/* Bookstore Logo and Name */}
         <NavLink
           to='/'
-          className='flex items-center gap-2 text-2xl font-bold text-blue-700'
+          className='flex items-center gap-2 text-3xl font-bold text-blue-700'
         >
-          <span className='text-3xl'>📚</span>
+          <span className='text-4xl'>📚</span>
           Vipin's Bookstore
         </NavLink>
 
