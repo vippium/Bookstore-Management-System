@@ -13,7 +13,7 @@ export default function Home() {
   const [selectedGenre, setSelectedGenre] = useState('All Genres')
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
-  const [activeFilterType, setActiveFilterType] = useState('Genre')
+  const [activeFilterType, setActiveFilterType] = useState('Title/Author')
   const [loading, setLoading] = useState(true)
 
   const booksPerPage = 12
@@ -188,7 +188,7 @@ export default function Home() {
         </div>
 
         {/* Filter Type Selector */}
-        <div className='relative w-full md:w-40 md:ml-auto'>
+        <div className='relative w-full md:w-auto md:ml-auto'>
           <Listbox value={activeFilterType} onChange={setActiveFilterType}>
             {({ open }) => (
               <div className='relative'>
