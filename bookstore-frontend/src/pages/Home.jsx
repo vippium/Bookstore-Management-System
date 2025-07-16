@@ -17,13 +17,21 @@ export default function Home () {
   const [activeFilterType, setActiveFilterType] = useState('Genre')
   const filterTypes = ['Genre', 'Title/Author', 'Price Range']
 
+  const [isLoading, setIsLoading] = useState(true)
+  const [fetchError, setFetchError] = useState(false)
+
   useEffect(() => {
     const fetchBooks = async () => {
+      setIsLoading(true)
+      setFetchError(false)
       try {
         const res = await api.get('/books')
         setBooks(res.data)
       } catch (error) {
         console.error('Failed to fetch books:', error)
+        setFetchError(true)
+      } finally {
+        setIsLoading(false)
       }
     }
     fetchBooks()
@@ -189,7 +197,9 @@ export default function Home () {
                       value={type}
                       className={({ active }) =>
                         `px-4 py-2 cursor-pointer text-center ${
-                          active ? 'bg-blue-100 text-blue-900' : 'text-gray-700'
+                          active
+                            ? 'bg-blue-100 text-blue-900'
+                            : 'text-gray-700'
                         }`
                       }
                     >
@@ -203,11 +213,21 @@ export default function Home () {
         </div>
       </div>
 
-      {/* Book Grid or Empty Message */}
-      {filteredBooks.length === 0 ? (
-        <p className='text-gray-500 text-center mt-8'>
-          No books found matching your criteria.
+      {/* Book Grid or State Messages */}
+      {fetchError ? (
+        <p className='text-center text-red-500 mt-10'>
+          ⚠️ Unable to load books. Please try again later.
         </p>
+      ) : isLoading ? null : filteredBooks.length === 0 ? (
+        books.length === 0 ? (
+          <p className='text-center text-gray-500 mt-10'>
+            No books available at the moment.
+          </p>
+        ) : (
+          <p className='text-center text-gray-500 mt-10'>
+            No books found matching your criteria.
+          </p>
+        )
       ) : (
         <>
           <AnimatePresence mode='wait'>
@@ -260,7 +280,7 @@ export default function Home () {
             </motion.div>
           </AnimatePresence>
 
-          {/* Pagination Controls */}
+          {/* Pagination */}
           <div className='flex justify-center mt-10 gap-2 flex-wrap'>
             <button
               onClick={() => handlePageChange(currentPage - 1)}
