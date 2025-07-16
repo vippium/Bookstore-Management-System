@@ -5,28 +5,50 @@ import { Listbox } from '@headlessui/react'
 import { LibraryBig, Search, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export default function Home () {
+export default function Home() {
   const [books, setBooks] = useState([])
   const [search, setSearch] = useState('')
   const [searchInput, setSearchInput] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  const booksPerPage = 12
   const [selectedGenre, setSelectedGenre] = useState('All Genres')
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
   const [activeFilterType, setActiveFilterType] = useState('Genre')
+  const [loading, setLoading] = useState(true)
+
+  const booksPerPage = 12
   const filterTypes = ['Genre', 'Title/Author', 'Price Range']
 
   useEffect(() => {
+    let isMounted = true
+
     const fetchBooks = async () => {
       try {
         const res = await api.get('/books')
-        setBooks(res.data)
+        if (isMounted) {
+          setBooks(res.data)
+        }
       } catch (error) {
         console.error('Failed to fetch books:', error)
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
       }
     }
+
     fetchBooks()
+
+    const timeout = setTimeout(() => {
+      if (isMounted) {
+        setLoading(false)
+      }
+    }, 40000)
+
+    return () => {
+      isMounted = false
+      clearTimeout(timeout)
+    }
   }, [])
 
   const genres = ['All Genres', ...new Set(books.map(book => book.genre))]
@@ -203,8 +225,13 @@ export default function Home () {
         </div>
       </div>
 
-      {/* Book Grid or Empty Message */}
-      {filteredBooks.length === 0 ? (
+      {/* Spinner / Empty / Books */}
+      {loading ? (
+        <div className='flex justify-center items-center py-20 text-blue-600 text-sm'>
+          <span className='animate-spin mr-2 w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full'></span>
+          Loading books...
+        </div>
+      ) : filteredBooks.length === 0 ? (
         <p className='text-gray-500 text-center mt-8'>
           No books found matching your criteria.
         </p>
@@ -260,7 +287,7 @@ export default function Home () {
             </motion.div>
           </AnimatePresence>
 
-          {/* Pagination Controls */}
+          {/* Pagination */}
           <div className='flex justify-center mt-10 gap-2 flex-wrap'>
             <button
               onClick={() => handlePageChange(currentPage - 1)}
