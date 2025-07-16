@@ -1,7 +1,5 @@
 <p align="center"><img src="https://socialify.git.ci/vippium/Bookstore-Management-System/image?custom_description=&amp;custom_language=React&amp;description=1&amp;font=Jost&amp;language=1&amp;name=1&amp;pattern=Transparent&amp;theme=Auto" alt="project-image"></p>
 
-<p id="description">A full-featured Bookstore web application built with the MERN stack (MongoDB, Express.js, React, Node.js). It offers robust features for customers to explore and purchase books, and for admins to manage inventory and orders. Includes email notifications with PDF invoices, real-time UI feedback, and a polished, responsive interface..</p>
-
 
 ## 👾 Features
 
