@@ -5,36 +5,50 @@ import { Listbox } from '@headlessui/react'
 import { LibraryBig, Search, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export default function Home () {
+export default function Home() {
   const [books, setBooks] = useState([])
   const [search, setSearch] = useState('')
   const [searchInput, setSearchInput] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  const booksPerPage = 12
   const [selectedGenre, setSelectedGenre] = useState('All Genres')
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
   const [activeFilterType, setActiveFilterType] = useState('Genre')
+  const [loading, setLoading] = useState(true)
+
+  const booksPerPage = 12
   const filterTypes = ['Genre', 'Title/Author', 'Price Range']
 
-  const [isLoading, setIsLoading] = useState(true)
-  const [fetchError, setFetchError] = useState(false)
-
   useEffect(() => {
+    let isMounted = true
+
     const fetchBooks = async () => {
-      setIsLoading(true)
-      setFetchError(false)
       try {
         const res = await api.get('/books')
-        setBooks(res.data)
+        if (isMounted) {
+          setBooks(res.data)
+        }
       } catch (error) {
         console.error('Failed to fetch books:', error)
-        setFetchError(true)
       } finally {
-        setIsLoading(false)
+        if (isMounted) {
+          setLoading(false)
+        }
       }
     }
+
     fetchBooks()
+
+    const timeout = setTimeout(() => {
+      if (isMounted) {
+        setLoading(false)
+      }
+    }, 40000)
+
+    return () => {
+      isMounted = false
+      clearTimeout(timeout)
+    }
   }, [])
 
   const genres = ['All Genres', ...new Set(books.map(book => book.genre))]
@@ -197,9 +211,7 @@ export default function Home () {
                       value={type}
                       className={({ active }) =>
                         `px-4 py-2 cursor-pointer text-center ${
-                          active
-                            ? 'bg-blue-100 text-blue-900'
-                            : 'text-gray-700'
+                          active ? 'bg-blue-100 text-blue-900' : 'text-gray-700'
                         }`
                       }
                     >
@@ -213,21 +225,16 @@ export default function Home () {
         </div>
       </div>
 
-      {/* Book Grid or State Messages */}
-      {fetchError ? (
-        <p className='text-center text-red-500 mt-10'>
-          ⚠️ Unable to load books. Please try again later.
+      {/* Spinner / Empty / Books */}
+      {loading ? (
+        <div className='flex justify-center items-center py-20 text-blue-600 text-sm'>
+          <span className='animate-spin mr-2 w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full'></span>
+          Loading books...
+        </div>
+      ) : filteredBooks.length === 0 ? (
+        <p className='text-gray-500 text-center mt-8'>
+          No books found matching your criteria.
         </p>
-      ) : isLoading ? null : filteredBooks.length === 0 ? (
-        books.length === 0 ? (
-          <p className='text-center text-gray-500 mt-10'>
-            No books available at the moment.
-          </p>
-        ) : (
-          <p className='text-center text-gray-500 mt-10'>
-            No books found matching your criteria.
-          </p>
-        )
       ) : (
         <>
           <AnimatePresence mode='wait'>
