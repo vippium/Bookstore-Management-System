@@ -22,7 +22,7 @@ import Profile from './pages/Profile'
 import Wishlist from './pages/Wishlist'
 import ProtectedRoute from './components/ProtectedRoute'
 import { Loader } from 'lucide-react'
-import VerifyOtp from './components/VerifyOtp'  // ✅ keep this
+import VerifyOtp from './components/VerifyOtp'
 
 export default function App () {
   const { loadingAuth } = useContext(AuthContext)
@@ -47,7 +47,7 @@ export default function App () {
         <Route path='/books/:id' element={<BookDetails />} />
         <Route path='/order-success' element={<OrderSuccess />} />
         <Route path='/wishlist' element={<Wishlist />} />
-        <Route path='/verify-otp' element={<VerifyOtp />} /> {/* ✅ only this */}
+        <Route path='/verify-otp' element={<VerifyOtp />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
