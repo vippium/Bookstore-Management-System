@@ -1,6 +1,8 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const sendEmail = require("../utils/sendEmail");
+const crypto = require("crypto");
 
 const generateToken = (user) => {
   return jwt.sign(
@@ -24,15 +26,26 @@ const registerUser = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiry = Date.now() + 15 * 60 * 1000; // 15 minutes
 
-    const user = await User.create({ name, email, password: hashedPassword });
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      otp,
+      otpExpiry,
+    });
+
+    await sendEmail({
+      to: email,
+      subject: "Your Bookstore OTP Code",
+      html: `<h2>Welcome to Bookstore 📚</h2><p>Your OTP is: <strong>${otp}</strong></p><p>It expires in 15 minutes.</p>`,
+    });
 
     res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      token: generateToken(user),
+      message: "Registered successfully. Please verify your email.",
+      userId: user._id,
     });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
@@ -43,12 +56,33 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ email }).select(
+      "+password +otp +otpExpiry"
+    );
     if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(401).json({ message: "Invalid credentials" });
+
+    if (!user.isVerified) {
+      // Regenerate and send new OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      user.otp = otp;
+      user.otpExpiry = Date.now() + 15 * 60 * 1000;
+      await user.save();
+
+      await sendEmail({
+        to: email,
+        subject: "Bookstore Login OTP Verification",
+        html: `<h2>OTP Verification Required</h2><p>Your new OTP is: <strong>${otp}</strong></p><p>This OTP expires in 15 minutes.</p>`,
+      });
+
+      return res.status(403).json({
+        message: "Email not verified. Please check your inbox for the OTP.",
+        userId: user._id,
+      });
+    }
 
     user.lastLogin = new Date();
     await user.save();
@@ -141,6 +175,49 @@ const changePassword = async (req, res) => {
   }
 };
 
+const verifyOtp = async (req, res) => {
+  const { userId, otp } = req.body;
+
+  try {
+    const user = await User.findById(userId).select("+otp +otpExpiry");
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (user.isVerified)
+      return res.status(400).json({ message: "User already verified" });
+
+    if (
+      !user.otp ||
+      !user.otpExpiry ||
+      user.otp !== otp ||
+      user.otpExpiry < Date.now()
+    ) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    user.isVerified = true;
+    user.otp = undefined;
+    user.otpExpiry = undefined;
+    await user.save();
+
+    const token = jwt.sign(
+      { id: user._id, name: user.name, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.status(200).json({
+      message: "OTP verified successfully",
+      token,
+      userId: user._id,
+    });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "OTP verification failed", error: err.message });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -148,4 +225,5 @@ module.exports = {
   updateProfile,
   getMe,
   changePassword,
+  verifyOtp,
 };

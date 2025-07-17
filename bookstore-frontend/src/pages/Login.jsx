@@ -1,58 +1,62 @@
-import { useState, useContext } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import AuthContext from '../context/AuthContext'
-import { Eye, EyeOff, LogIn, Mail, Lock, Loader } from 'lucide-react'
-import toast from 'react-hot-toast'
+import { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import AuthContext from '../context/AuthContext';
+import { Eye, EyeOff, LogIn, Mail, Lock, Loader } from 'lucide-react';
 
-export default function Login () {
-  const { login } = useContext(AuthContext)
-  const navigate = useNavigate()
+export default function Login() {
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const [form, setForm] = useState({ email: '', password: '' })
-  const [errors, setErrors] = useState({})
-  const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [remember, setRemember] = useState(false)
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [remember, setRemember] = useState(false);
 
   const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-    setErrors({ ...errors, [e.target.name]: '' })
-  }
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: '' });
+  };
 
   const validate = () => {
-    const errs = {}
-    if (!form.email) errs.email = 'Email is required'
-    if (!form.password) errs.password = 'Password is required'
-    setErrors(errs)
-    return Object.keys(errs).length === 0
-  }
+    const errs = {};
+    if (!form.email) errs.email = 'Email is required';
+    if (!form.password) errs.password = 'Password is required';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
 
   const handleSubmit = async e => {
-    e.preventDefault()
-    if (!validate()) return
+    e.preventDefault();
+    if (!validate()) return;
 
-    setLoading(true)
+    setLoading(true);
     try {
-      const success = await login(form.email, form.password, remember)
-      if (success) {
-        toast.success('Logged in successfully!')
-        navigate('/')
+      const result = await login(form.email, form.password, remember);
+
+      if (result.success) {
+        navigate('/');
+      } else if (
+        result.message?.includes('Email not verified') &&
+        result.userId
+      ) {
+        navigate('/verify-otp', {
+          state: { userId: result.userId, email: form.email }
+        });
       } else {
-        setErrors({ password: 'Invalid credentials' })
-        toast.error('Login failed. Please check your credentials.')
+        setErrors({ password: 'Invalid credentials' });
       }
     } catch (error) {
-      console.error('Login error:', error)
-      toast.error('An unexpected error occurred during login.')
+      console.error('Login error:', error);
+      setErrors({ password: 'Login failed. Check credentials.' });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className='flex items-center justify-center min-h-screen bg-gray-50 px-4 py-8'>
       <div className='w-full max-w-md p-8 bg-white rounded-2xl shadow-xl border border-blue-100 animate-fade-in-up'>
-        {/* Login Header */}
         <div className='flex flex-col items-center mb-8'>
           <LogIn className='w-16 h-16 text-blue-600 mb-4' />
           <h2 className='text-3xl font-bold text-blue-700 text-center'>
@@ -64,12 +68,8 @@ export default function Login () {
         </div>
 
         <form onSubmit={handleSubmit} className='space-y-6'>
-          {/* Email Input */}
           <div>
-            <label
-              htmlFor='email'
-              className='block text-sm font-medium text-gray-700 mb-1'
-            >
+            <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-1'>
               Email Address
             </label>
             <div className='relative'>
@@ -79,27 +79,20 @@ export default function Login () {
                 name='email'
                 value={form.email}
                 onChange={handleChange}
-                className={`w-full px-4 py-2.5 pl-10 border rounded-xl shadow-sm focus:outline-none focus:ring-2 text-base transition-all duration-200
-                  ${
-                    errors.email
-                      ? 'border-red-400 focus:ring-red-300'
-                      : 'border-gray-300 focus:ring-blue-400'
-                  }`}
+                className={`w-full px-4 py-2.5 pl-10 border rounded-xl shadow-sm focus:outline-none focus:ring-2 text-base transition-all duration-200 ${
+                  errors.email
+                    ? 'border-red-400 focus:ring-red-300'
+                    : 'border-gray-300 focus:ring-blue-400'
+                }`}
                 placeholder='your.email@example.com'
               />
               <Mail className='w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2' />
             </div>
-            {errors.email && (
-              <p className='text-xs text-red-500 mt-1'>{errors.email}</p>
-            )}
+            {errors.email && <p className='text-xs text-red-500 mt-1'>{errors.email}</p>}
           </div>
 
-          {/* Password Input */}
           <div>
-            <label
-              htmlFor='password'
-              className='block text-sm font-medium text-gray-700 mb-1'
-            >
+            <label htmlFor='password' className='block text-sm font-medium text-gray-700 mb-1'>
               Password
             </label>
             <div className='relative'>
@@ -109,12 +102,11 @@ export default function Login () {
                 name='password'
                 value={form.password}
                 onChange={handleChange}
-                className={`w-full px-4 py-2.5 pl-10 border rounded-xl shadow-sm focus:outline-none focus:ring-2 text-base transition-all duration-200
-                  ${
-                    errors.password
-                      ? 'border-red-400 focus:ring-red-300'
-                      : 'border-gray-300 focus:ring-blue-400'
-                  }`}
+                className={`w-full px-4 py-2.5 pl-10 border rounded-xl shadow-sm focus:outline-none focus:ring-2 text-base transition-all duration-200 ${
+                  errors.password
+                    ? 'border-red-400 focus:ring-red-300'
+                    : 'border-gray-300 focus:ring-blue-400'
+                }`}
                 placeholder='Enter your password'
               />
               <Lock className='w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2' />
@@ -125,12 +117,9 @@ export default function Login () {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </span>
             </div>
-            {errors.password && (
-              <p className='text-xs text-red-500 mt-1'>{errors.password}</p>
-            )}
+            {errors.password && <p className='text-xs text-red-500 mt-1'>{errors.password}</p>}
           </div>
 
-          {/* Remember Me Checkbox */}
           <div className='flex items-center text-sm text-gray-600'>
             <input
               type='checkbox'
@@ -139,12 +128,9 @@ export default function Login () {
               checked={remember}
               onChange={e => setRemember(e.target.checked)}
             />
-            <label htmlFor='remember' className='select-none'>
-              Remember Me
-            </label>
+            <label htmlFor='remember' className='select-none'>Remember Me</label>
           </div>
 
-          {/* Login Button */}
           <button
             type='submit'
             disabled={loading}
@@ -159,18 +145,14 @@ export default function Login () {
             )}
           </button>
 
-          {/* Register Link */}
           <p className='text-sm text-gray-600 text-center mt-6'>
             Don’t have an account?{' '}
-            <Link
-              to='/register'
-              className='text-blue-600 hover:underline font-medium'
-            >
+            <Link to='/register' className='text-blue-600 hover:underline font-medium'>
               Register here
             </Link>
           </p>
         </form>
       </div>
     </div>
-  )
+  );
 }
