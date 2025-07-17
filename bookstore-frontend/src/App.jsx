@@ -22,7 +22,7 @@ import Profile from './pages/Profile'
 import Wishlist from './pages/Wishlist'
 import ProtectedRoute from './components/ProtectedRoute'
 import { Loader } from 'lucide-react'
-import VerifyOtp from './components/VerifyOtp'
+import VerifyOtp from './components/VerifyOtp'  // ✅ keep this
 
 export default function App () {
   const { loadingAuth } = useContext(AuthContext)
@@ -46,11 +46,10 @@ export default function App () {
         <Route path='/register' element={<Register />} />
         <Route path='/books/:id' element={<BookDetails />} />
         <Route path='/order-success' element={<OrderSuccess />} />
-        <Route path='/verify-otp' element={<VerifyOtp />} />
         <Route path='/wishlist' element={<Wishlist />} />
+        <Route path='/verify-otp' element={<VerifyOtp />} /> {/* ✅ only this */}
 
-
-        {/* Protected Routes (any authenticated user) */}
+        {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/cart' element={<Cart />} />
@@ -58,7 +57,7 @@ export default function App () {
           <Route path='/profile' element={<Profile />} />
         </Route>
 
-        {/* Admin Only */}
+        {/* Admin Routes */}
         <Route element={<ProtectedRoute requiredRole='admin' />}>
           <Route path='/admin' element={<AdminDashboard />} />
           <Route path='/admin/books/:id/edit' element={<EditBook />} />

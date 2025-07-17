@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (name, email, password) => {
     try {
       const res = await api.post('/auth/register', { name, email, password })
-      const { userId} = res.data
+      const { userId } = res.data
       return { success: true, userId }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Registration failed')

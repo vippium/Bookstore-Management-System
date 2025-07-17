@@ -167,7 +167,6 @@ export default function Register () {
 
         {step === 'register' ? (
           <form onSubmit={handleRegister} className='space-y-6'>
-            {/* Name */}
             <div>
               <label className='block text-sm font-medium text-gray-700 mb-1'>Full Name</label>
               <div className='relative'>
@@ -186,7 +185,6 @@ export default function Register () {
               {errors.name && <p className='text-xs text-red-500 mt-1'>{errors.name}</p>}
             </div>
 
-            {/* Email */}
             <div>
               <label className='block text-sm font-medium text-gray-700 mb-1'>Email Address</label>
               <div className='relative'>
@@ -205,7 +203,6 @@ export default function Register () {
               {errors.email && <p className='text-xs text-red-500 mt-1'>{errors.email}</p>}
             </div>
 
-            {/* Password */}
             <div>
               <label className='block text-sm font-medium text-gray-700 mb-1'>Password</label>
               <div className='relative'>
