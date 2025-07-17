@@ -38,6 +38,7 @@ export const AuthProvider = ({ children }) => {
         })
         .catch(error => {
           console.error('Failed to fetch user on mount:', error)
+
           logout()
         })
         .finally(() => setLoadingAuth(false))
@@ -49,7 +50,13 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password, remember = false) => {
     try {
       const res = await api.post('/auth/login', { email, password })
-      const { token } = res.data
+      const { token, userId, message } = res.data
+
+      if (message && message.includes('Email not verified')) {
+        toast.error(message)
+
+        return { success: false, userId: userId, message: message }
+      }
 
       if (remember) {
         localStorage.setItem('token', token)
@@ -60,34 +67,39 @@ export const AuthProvider = ({ children }) => {
       const userRes = await api.get('/auth/me')
       setUser(userRes.data.user)
       setIsLoggedIn(true)
-
-      return true
+      toast.success('Logged in successfully!')
+      return { success: true }
     } catch (err) {
       console.error('Login failed:', err.response?.data?.message || err.message)
       toast.error(err.response?.data?.message || 'Login failed')
-      return false
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Login failed'
+      }
     }
   }
 
   const register = async (name, email, password) => {
     try {
       const res = await api.post('/auth/register', { name, email, password })
-      const { token } = res.data
 
-      localStorage.setItem('token', token)
+      const { userId, message } = res.data
 
-      const userRes = await api.get('/auth/me')
-      setUser(userRes.data.user)
-      setIsLoggedIn(true)
-      toast.success('Registered and logged in!')
-      return true
+      toast.success(
+        message || 'Registration successful! Please verify your email.'
+      )
+
+      return { success: true, userId: userId }
     } catch (err) {
       console.error(
         'Registration failed:',
         err.response?.data?.message || err.message
       )
       toast.error(err.response?.data?.message || 'Registration failed')
-      return false
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Registration failed'
+      }
     }
   }
 
@@ -100,9 +112,36 @@ export const AuthProvider = ({ children }) => {
     toast.success('Logged out successfully!')
   }
 
+  const loginWithToken = async (token) => {
+  try {
+    if (token) {
+      localStorage.setItem('token', token);
+    }
+
+    const userRes = await api.get('/auth/me');
+    setUser(userRes.data.user);
+    setIsLoggedIn(true);
+    toast.success('Email verified and logged in successfully!');
+    return { success: true };
+  } catch (err) {
+    console.error('Login with token failed:', err);
+    toast.error('Failed to log in after verification');
+    return { success: false };
+  }
+};
+
+
   return (
     <AuthContext.Provider
-      value={{ user, isLoggedIn, login, logout, loadingAuth, register }}
+      value={{
+        user,
+        isLoggedIn,
+        login,
+        logout,
+        loadingAuth,
+        register,
+        loginWithToken
+      }}
     >
       {children}
     </AuthContext.Provider>

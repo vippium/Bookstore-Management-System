@@ -16,7 +16,6 @@ const userSchema = new mongoose.Schema(
       required: [true, "Please enter your password"],
       select: false,
     },
-
     role: {
       type: String,
       enum: ["customer", "admin"],
@@ -26,7 +25,13 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-
+    otp: {
+      type: String,
+      select: false,
+    },
+    otpExpiry: {
+      type: Date,
+    },
     lastLogin: Date,
   },
   { timestamps: true }
