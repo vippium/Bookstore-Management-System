@@ -18,13 +18,11 @@ export const AuthProvider = ({ children }) => {
       try {
         const decoded = jwtDecode(token)
         if (decoded.exp * 1000 < Date.now()) {
-          console.log('Token expired, logging out.')
           logout()
           setLoadingAuth(false)
           return
         }
       } catch (e) {
-        console.error('Invalid token, logging out:', e)
         logout()
         setLoadingAuth(false)
         return
@@ -36,9 +34,7 @@ export const AuthProvider = ({ children }) => {
           setUser(res.data.user)
           setIsLoggedIn(true)
         })
-        .catch(error => {
-          console.error('Failed to fetch user on mount:', error)
-
+        .catch(() => {
           logout()
         })
         .finally(() => setLoadingAuth(false))
@@ -52,10 +48,9 @@ export const AuthProvider = ({ children }) => {
       const res = await api.post('/auth/login', { email, password })
       const { token, userId, message } = res.data
 
-      if (message && message.includes('Email not verified')) {
+      if (message?.includes('Email not verified')) {
         toast.error(message)
-
-        return { success: false, userId: userId, message: message }
+        return { success: false, userId, message }
       }
 
       if (remember) {
@@ -70,7 +65,6 @@ export const AuthProvider = ({ children }) => {
       toast.success('Logged in successfully!')
       return { success: true }
     } catch (err) {
-      console.error('Login failed:', err.response?.data?.message || err.message)
       toast.error(err.response?.data?.message || 'Login failed')
       return {
         success: false,
@@ -82,19 +76,10 @@ export const AuthProvider = ({ children }) => {
   const register = async (name, email, password) => {
     try {
       const res = await api.post('/auth/register', { name, email, password })
-
       const { userId, message } = res.data
-
-      toast.success(
-        message || 'Registration successful! Please verify your email.'
-      )
-
-      return { success: true, userId: userId }
+      toast.success(message || 'Registration successful! Please verify your email.')
+      return { success: true, userId }
     } catch (err) {
-      console.error(
-        'Registration failed:',
-        err.response?.data?.message || err.message
-      )
       toast.error(err.response?.data?.message || 'Registration failed')
       return {
         success: false,
@@ -112,24 +97,32 @@ export const AuthProvider = ({ children }) => {
     toast.success('Logged out successfully!')
   }
 
-  const loginWithToken = async (token) => {
-  try {
-    if (token) {
-      localStorage.setItem('token', token);
+  const loginWithToken = async token => {
+    try {
+      if (token) {
+        localStorage.setItem('token', token)
+      }
+
+      const userRes = await api.get('/auth/me')
+      setUser(userRes.data.user)
+      setIsLoggedIn(true)
+      toast.success('Email verified and logged in successfully!')
+      return { success: true }
+    } catch (err) {
+      toast.error('Failed to log in after verification')
+      return { success: false }
     }
-
-    const userRes = await api.get('/auth/me');
-    setUser(userRes.data.user);
-    setIsLoggedIn(true);
-    toast.success('Email verified and logged in successfully!');
-    return { success: true };
-  } catch (err) {
-    console.error('Login with token failed:', err);
-    toast.error('Failed to log in after verification');
-    return { success: false };
   }
-};
 
+  const deleteAccount = async () => {
+    try {
+      await api.delete('/auth/delete')
+      toast.success('Account deleted successfully!')
+      logout()
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to delete account')
+    }
+  }
 
   return (
     <AuthContext.Provider
@@ -140,7 +133,8 @@ export const AuthProvider = ({ children }) => {
         logout,
         loadingAuth,
         register,
-        loginWithToken
+        loginWithToken,
+        deleteAccount
       }}
     >
       {children}
