@@ -1,13 +1,15 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
-import { Loader, Eye, EyeOff, Mail, Lock, User, ShieldCheck } from 'lucide-react';
+import {
+  Loader, Eye, EyeOff, Mail, Lock, User, ShieldCheck
+} from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../services/axios';
 
-const TEMPORARY_EMAIL_DOMAINS = [/* ...existing list truncated for brevity... */];
+const TEMPORARY_EMAIL_DOMAINS = [/* truncated for brevity */];
 
-export default function Register() {
+export default function Register () {
   const { register, loginWithToken } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -19,6 +21,22 @@ export default function Register() {
   const [passwordStrength, setPasswordStrength] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [resendTimer, setResendTimer] = useState(60);
+
+  useEffect(() => {
+    if (step === 'otp') {
+      const timer = setInterval(() => {
+        setResendTimer(prev => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [step]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -66,6 +84,7 @@ export default function Register() {
         setUserId(res.userId);
         setStep('otp');
         toast.success('OTP sent to your email. Please verify.');
+        setResendTimer(60);
       }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Registration failed');
@@ -74,9 +93,26 @@ export default function Register() {
     }
   };
 
+  const handleResendOtp = async () => {
+    setLoading(true);
+    try {
+      const res = await register(form.name, form.email, form.password);
+      if (res?.userId) {
+        setUserId(res.userId);
+        setOtp('');
+        setResendTimer(60);
+        toast.success('OTP resent successfully');
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to resend OTP');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleOtpVerify = async e => {
     e.preventDefault();
-    if (!otp.trim()) return toast.error('Please enter your OTP');
+    if (otp.length < 6) return toast.error('Please enter all 6 digits');
     setLoading(true);
     try {
       const res = await api.post('/auth/verify', { userId, otp });
@@ -87,6 +123,30 @@ export default function Register() {
       toast.error(err.response?.data?.message || 'OTP verification failed');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleOtpChange = (e, index) => {
+    const value = e.target.value;
+    if (!/^[0-9]?$/.test(value)) return;
+
+    const newOtp = otp.split('');
+    newOtp[index] = value;
+    const updated = newOtp.join('');
+    setOtp(updated);
+
+    if (value && index < 5) {
+      document.getElementById(`otp-${index + 1}`)?.focus();
+    }
+
+    if (updated.length === 6 && !updated.includes('')) {
+      setTimeout(() => document.getElementById('otp-submit')?.click(), 100);
+    }
+  };
+
+  const handleOtpKeyDown = (e, index) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      document.getElementById(`otp-${index - 1}`)?.focus();
     }
   };
 
@@ -107,12 +167,12 @@ export default function Register() {
 
         {step === 'register' ? (
           <form onSubmit={handleRegister} className='space-y-6'>
+            {/* Name */}
             <div>
-              <label htmlFor='name' className='block text-sm font-medium text-gray-700 mb-1'>Full Name</label>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Full Name</label>
               <div className='relative'>
                 <input
                   type='text'
-                  id='name'
                   name='name'
                   value={form.name}
                   onChange={handleChange}
@@ -126,12 +186,12 @@ export default function Register() {
               {errors.name && <p className='text-xs text-red-500 mt-1'>{errors.name}</p>}
             </div>
 
+            {/* Email */}
             <div>
-              <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-1'>Email Address</label>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Email Address</label>
               <div className='relative'>
                 <input
                   type='email'
-                  id='email'
                   name='email'
                   value={form.email}
                   onChange={handleChange}
@@ -145,12 +205,12 @@ export default function Register() {
               {errors.email && <p className='text-xs text-red-500 mt-1'>{errors.email}</p>}
             </div>
 
+            {/* Password */}
             <div>
-              <label htmlFor='password' className='block text-sm font-medium text-gray-700 mb-1'>Password</label>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Password</label>
               <div className='relative'>
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  id='password'
                   name='password'
                   value={form.password}
                   onChange={handleChange}
@@ -189,18 +249,38 @@ export default function Register() {
           </form>
         ) : (
           <form onSubmit={handleOtpVerify} className='space-y-6'>
-            <div>
-              <input
-                type='text'
-                placeholder='Enter OTP'
-                value={otp}
-                onChange={e => setOtp(e.target.value)}
-                maxLength={6}
-                className='w-full px-4 py-2.5 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all text-base text-center'
-              />
+            <div className='flex justify-center gap-2'>
+              {[...Array(6)].map((_, i) => (
+                <input
+                  key={i}
+                  id={`otp-${i}`}
+                  type='text'
+                  inputMode='numeric'
+                  maxLength={1}
+                  value={otp[i] || ''}
+                  onChange={e => handleOtpChange(e, i)}
+                  onKeyDown={e => handleOtpKeyDown(e, i)}
+                  className='w-12 h-12 text-center text-lg border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-transform animate-fade-in-up'
+                />
+              ))}
+            </div>
+
+            <div className='text-center text-sm text-gray-500'>
+              {resendTimer > 0 ? (
+                <>Resend in <span className='text-blue-600 font-medium'>{resendTimer}s</span></>
+              ) : (
+                <button
+                  type='button'
+                  onClick={handleResendOtp}
+                  className='text-blue-600 hover:underline font-semibold'
+                >
+                  Resend OTP
+                </button>
+              )}
             </div>
 
             <button
+              id='otp-submit'
               type='submit'
               disabled={loading}
               className='w-full bg-blue-600 text-white py-3 rounded-full hover:bg-blue-700 transition font-semibold shadow-md flex items-center justify-center gap-2'
