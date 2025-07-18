@@ -1,40 +1,48 @@
-import { useState, useEffect } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-import api from '../services/axios'
-import toast from 'react-hot-toast'
-import { Loader, ShieldCheck } from 'lucide-react'
+import { useState, useEffect, useContext } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import api from '../services/axios';
+import toast from 'react-hot-toast';
+import { Loader, ShieldCheck } from 'lucide-react';
+import AuthContext from '../context/AuthContext';
 
-export default function VerifyOtp () {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const userId = location.state?.userId
+export default function VerifyOtp() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const userId = location.state?.userId;
+  const email = location.state?.email;
 
-  const [otp, setOtp] = useState('')
-  const [loading, setLoading] = useState(false)
+  const { loginWithToken } = useContext(AuthContext);
+
+  const [otp, setOtp] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!userId) {
-      toast.error('Missing user ID. Redirecting to login...')
-      navigate('/login')
+      toast.error('Missing user ID. Redirecting to login...');
+      navigate('/login');
     }
-  }, [userId, navigate])
+  }, [userId, navigate]);
 
   const handleVerify = async e => {
-    e.preventDefault()
-    if (!otp.trim()) return toast.error('Please enter your OTP')
+    e.preventDefault();
+    if (!otp.trim()) return toast.error('Please enter your OTP');
 
-    setLoading(true)
+    setLoading(true);
     try {
-      const res = await api.post('/auth/verify', { userId, otp })
-      toast.success('Email verified successfully!')
-      localStorage.setItem('bookstore_token', res.data.token)
-      navigate('/')
+      const res = await api.post('/auth/verify', { userId, otp });
+      const { token } = res.data;
+
+      const result = await loginWithToken(token);
+
+      if (result.success) {
+        navigate('/dashboard');
+      }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'OTP verification failed')
+      toast.error(err.response?.data?.message || 'OTP verification failed');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className='flex items-center justify-center min-h-screen bg-gray-50 px-4 py-8'>
@@ -44,6 +52,7 @@ export default function VerifyOtp () {
           <h2 className='text-xl font-bold text-blue-700'>Verify OTP</h2>
           <p className='text-sm text-gray-500 mt-1 text-center'>
             Enter the 6-digit code sent to your email
+            {email && <span className='font-semibold'> ({email})</span>}
           </p>
         </div>
 
@@ -75,5 +84,5 @@ export default function VerifyOtp () {
         </form>
       </div>
     </div>
-  )
+  );
 }
