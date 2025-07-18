@@ -47,7 +47,6 @@ export default function App () {
         <Route path='/books/:id' element={<BookDetails />} />
         <Route path='/order-success' element={<OrderSuccess />} />
         <Route path='/wishlist' element={<Wishlist />} />
-        <Route path='/verify-otp' element={<VerifyOtp />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
