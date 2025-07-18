@@ -3,17 +3,19 @@
 
 ## 👾 Features
 
-- 🔐 User authentication with JWT (Login, Register, Logout)
-- 📚 Browse books with search, filter, pagination
-- 🛒 Add to Cart / Buy Now (guest + logged in)
-- 📦 Checkout with PDF invoice & email
-- 💬 Reviews & ratings system
-- ❤️ Wishlist management
-- 📊 Admin dashboard (books, users, orders)
-- 🧑‍💻 Profile page with edit, password reset, delete
-- 🌈 Fully animated UI (fade, swipe, hover, modal transitions)
-- 📬 Email integration via `nodemailer`
-- 📄 Deployment on Render (Backend) & Vercel (Frontend)
+- 🔐 **JWT Authentication** – Secure login, register, and logout flow with protected routes  
+- 📩 **Email OTP Verification** – Verify account via 6-digit OTP sent after registration 
+- 📚 **Book Browsing** – Search, filter, and paginate through available books  
+- 🛒 **Cart & Checkout** – Add to cart or buy instantly (only for verified logged-in users)  
+- 🧾 **Order System** – Place orders with auto-generated PDF invoices + email confirmation  
+- 💬 **Reviews & Ratings** – Share and view book reviews and star ratings  
+- ❤️ **Wishlist Management** – Save favorite books to your personal wishlist  
+- 📊 **Admin Dashboard** – Manage users, orders, and books with real-time data & analytics  
+- 👤 **User Profile** – Edit profile, change password, or delete account securely  
+- 🌈 **Polished UI/UX** – Smooth transitions, modals, animations, and responsive design  
+- 📬 **Email Notifications** – OTP and order confirmations via Nodemailer  
+- ☁️ **Deploy-Ready** – Hosted on **Render** (backend) & **Vercel** (frontend)  
+
 
 ---
 
@@ -61,7 +63,7 @@ Before getting started with Bookstore-Management-System, ensure your runtime env
 - Node.js
 - MongoDB Atlas database
 - Render account (for backend deployment)
-- Vercel account (for frontend deployment
+- Vercel account (for frontend deployment)
 
 ## 🚀 Usage
 
@@ -72,7 +74,7 @@ To run the **Bookstore Management System** locally, follow the steps below for b
 ```bash
 cd bookstore-backend
 npm install
-npm start dev
+npm run dev
 ```
 ### 🎨 Frontend Setup
 
