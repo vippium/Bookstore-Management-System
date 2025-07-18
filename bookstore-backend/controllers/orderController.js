@@ -165,12 +165,7 @@ const updateOrderStatus = async (req, res) => {
 
 const getUserOrderStats = async (req, res) => {
   try {
-    console.log("🔐 Authenticated user:", req.user);
-
     const orders = await Order.find({ userId: req.user._id });
-
-    console.log(`📦 Found ${orders.length} orders for user ${req.user._id}`);
-    console.log("🧾 Sample order:", orders[0]);
 
     const dailyStats = {};
 
@@ -184,14 +179,12 @@ const getUserOrderStats = async (req, res) => {
       count,
     }));
 
-    console.log("📊 Final stats:", result);
-
     res.json(result);
   } catch (err) {
-    console.error("❌ Error in getUserOrderStats:", err.message);
-    res
-      .status(500)
-      .json({ message: "Failed to load user order stats", error: err.message });
+    res.status(500).json({
+      message: "Failed to load user order stats",
+      error: err.message,
+    });
   }
 };
 
