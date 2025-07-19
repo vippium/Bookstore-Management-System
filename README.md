@@ -23,8 +23,6 @@
 
 ```sh
 └── Bookstore-Management-System/
-    ├── LICENSE
-    ├── README.md
     ├── bookstore-backend
     │   ├── .env.example
     │   ├── config
@@ -50,6 +48,8 @@
     │   └── vite.config.js
     ├── postman
     │   ├── bookstore-api.postman_collection.json
+    ├── LICENSE
+    ├── README.md
     └── package-lock.json
 ```
 
