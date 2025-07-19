@@ -128,5 +128,5 @@ You can find the Postman collection for testing all backend API endpoints in the
 
 ## 🎗 License
 
-This project is protected under the [MIT](https://choosealicense.com/licenses/mit/) License. For more details, refer to the [LICENSE](https://choosealicense.com/licenses/) file.
+This project is protected under the [MIT](https://choosealicense.com/licenses/mit/) License. For more details, refer to the [LICENSE](https://github.com/vippium/Bookstore-Management-System/blob/8354ac12755e2cc51595e89f86e562243e2fd562/LICENSE) file.
 
