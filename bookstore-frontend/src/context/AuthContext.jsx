@@ -18,12 +18,12 @@ export const AuthProvider = ({ children }) => {
       try {
         const decoded = jwtDecode(token)
         if (decoded.exp * 1000 < Date.now()) {
-          logout()
+          logout(false)
           setLoadingAuth(false)
           return
         }
       } catch (e) {
-        logout()
+        logout(false)
         setLoadingAuth(false)
         return
       }
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
           setIsLoggedIn(true)
         })
         .catch(() => {
-          logout()
+          logout(false)
         })
         .finally(() => setLoadingAuth(false))
     } else {
@@ -87,13 +87,16 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const logout = () => {
+  const logout = (showToast = true) => {
     localStorage.removeItem('token')
     sessionStorage.removeItem('token')
     localStorage.removeItem('cart_synced')
     setUser(null)
     setIsLoggedIn(false)
-    toast.success('Logged out successfully!')
+
+    if (showToast) {
+      toast.success('Logged out successfully!')
+    }
   }
 
   const loginWithToken = async token => {
@@ -116,8 +119,7 @@ export const AuthProvider = ({ children }) => {
   const deleteAccount = async () => {
     try {
       await api.delete('/auth/delete')
-      toast.success('Account deleted successfully!')
-      logout()
+      logout(false)
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to delete account')
     }
