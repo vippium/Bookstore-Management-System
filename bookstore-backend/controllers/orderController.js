@@ -20,7 +20,7 @@ const createOrder = async(req, res) => {
             total,
         });
 
-        // PDF invoice Code :
+        // Addition of PDF Invoice
         const generateInvoiceBuffer = () => {
             return new Promise((resolve) => {
                 const doc = new PDFDocument();

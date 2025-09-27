@@ -41,7 +41,7 @@ const registerUser = async(req, res) => {
             email,
             password: hashedPassword,
             otp,
-            otpExpiry: Date.now() + 15 * 60 * 1000, // 15 minutes
+            otpExpiry: Date.now() + 15 * 60 * 1000,
         });
 
         // Send OTP Email

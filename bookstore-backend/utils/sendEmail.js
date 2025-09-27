@@ -3,7 +3,6 @@ const nodemailer = require("nodemailer");
 async function sendEmail({ to, subject, html }) {
     try {
 
-        // Create transporter using Gmail
         const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
