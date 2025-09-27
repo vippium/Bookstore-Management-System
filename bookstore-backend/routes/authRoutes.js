@@ -3,20 +3,20 @@ const router = express.Router();
 const {
     registerUser,
     loginUser,
+    verifyOtp,
     resendOtp,
     deleteUser,
     updateProfile,
     getMe,
     changePassword,
-    verifyOtp,
 } = require("../controllers/authController");
 const { protect } = require("../middleware/authMiddleware");
 
-// Auth routes
+// Public routes
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.post("/verify-otp", verifyOtp);
 router.post("/resend-otp", resendOtp);
-router.post("/verify", verifyOtp);
 
 // Protected routes
 router.delete("/delete", protect, deleteUser);

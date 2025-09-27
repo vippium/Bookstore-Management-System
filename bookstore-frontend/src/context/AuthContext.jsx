@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
           setLoadingAuth(false);
           return;
         }
-      } catch (e) {
+      } catch {
         logout(false);
         setLoadingAuth(false);
         return;
@@ -34,9 +34,7 @@ export const AuthProvider = ({ children }) => {
           setUser(res.data.user);
           setIsLoggedIn(true);
         })
-        .catch(() => {
-          logout(false);
-        })
+        .catch(() => logout(false))
         .finally(() => setLoadingAuth(false));
     } else {
       setLoadingAuth(false);
@@ -46,80 +44,80 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password, remember = false) => {
     try {
       const res = await api.post("/auth/login", { email, password });
-      const { token, userId, message } = res.data;
+      const { token, user, message, userId } = res.data;
 
       if (message?.includes("Email not verified")) {
-        toast.error(message);
-        return { success: false, userId, message };
+        toast.error("Please verify your email before logging in.");
+        return { success: false, userId, email, message };
       }
 
-      if (remember) {
-        localStorage.setItem("token", token);
-      } else {
-        sessionStorage.setItem("token", token);
+      if (token) {
+        if (remember) localStorage.setItem("token", token);
+        else sessionStorage.setItem("token", token);
       }
 
-      const userRes = await api.get("/auth/me");
-      setUser(userRes.data.user);
+      setUser(user);
       setIsLoggedIn(true);
       toast.success("Logged in successfully!");
       return { success: true };
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
-      return {
-        success: false,
-        message: err.response?.data?.message || "Login failed",
-      };
+      return { success: false, message: err.response?.data?.message };
     }
   };
 
   const register = async (name, email, password) => {
     try {
       const res = await api.post("/auth/register", { name, email, password });
-      const { userId } = res.data;
-      return { success: true, userId };
-    } catch (err) {
-      if (err.response?.status === 409) {
-        toast.error(
-          "This email is already registered. Try logging in instead."
-        );
-      } else {
-        toast.error(err.response?.data?.message || "Registration failed");
+      const { success, userId } = res.data;
+
+      if (success) {
+        toast.success("Registered successfully. Please verify your email.");
+        return { success: true, userId, email };
       }
-      return {
-        success: false,
-        message: err.response?.data?.message || "Registration failed",
-      };
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Registration failed");
+      return { success: false, message: err.response?.data?.message };
+    }
+  };
+
+  const verifyOtp = async (userId, otp) => {
+    try {
+      const res = await api.post("/auth/verify-otp", { userId, otp });
+      const { token, user } = res.data;
+
+      if (token) {
+        localStorage.setItem("token", token);
+        setUser(user);
+        setIsLoggedIn(true);
+        toast.success("Email verified successfully!");
+        return { success: true };
+      }
+      return { success: false };
+    } catch (err) {
+      toast.error(err.response?.data?.message || "OTP verification failed");
+      return { success: false };
+    }
+  };
+
+  const resendOtp = async (userId) => {
+    try {
+      await api.post("/auth/resend-otp", { userId });
+      toast.success("OTP resent to your email!");
+      return { success: true };
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to resend OTP");
+      return { success: false };
     }
   };
 
   const logout = (showToast = true) => {
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
-    localStorage.removeItem("cart_synced");
     setUser(null);
     setIsLoggedIn(false);
 
-    if (showToast) {
-      toast.success("Logged out successfully!");
-    }
-  };
-
-  const loginWithToken = async (token) => {
-    try {
-      if (token) {
-        localStorage.setItem("token", token);
-      }
-
-      const userRes = await api.get("/auth/me");
-      setUser(userRes.data.user);
-      setIsLoggedIn(true);
-      toast.success("Email verified and logged in successfully!");
-      return { success: true };
-    } catch (err) {
-      toast.error("Failed to log in after verification");
-      return { success: false };
-    }
+    if (showToast) toast.success("Logged out successfully!");
   };
 
   const deleteAccount = async () => {
@@ -140,7 +138,8 @@ export const AuthProvider = ({ children }) => {
         logout,
         loadingAuth,
         register,
-        loginWithToken,
+        verifyOtp,
+        resendOtp,
         deleteAccount,
       }}
     >

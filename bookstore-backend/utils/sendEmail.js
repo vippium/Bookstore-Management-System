@@ -1,7 +1,9 @@
 const nodemailer = require("nodemailer");
 
-const sendEmail = async({ to, subject, html, attachments = [] }) => {
+async function sendEmail({ to, subject, html }) {
     try {
+
+        // Create transporter using Gmail
         const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -10,22 +12,21 @@ const sendEmail = async({ to, subject, html, attachments = [] }) => {
             },
         });
 
-        await transporter.verify().catch(() => {
-            console.warn("⚠️ Email transporter verification failed.");
-        });
-
-        return transporter.sendMail({
-            from: `"Bookstore 📚" <${process.env.EMAIL_USER}>`,
+        const mailOptions = {
+            from: `"Bookstore App" <${process.env.EMAIL_USER}>`,
             to,
             subject,
             html,
-            attachments,
-        });
-    } catch (err) {
-        console.error("❌ Email sending failed:", err.message);
-        // ⛔️ don’t throw, just log
-        return null;
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        console.log(`📨 Email sent successfully to ${to}`);
+        return true;
+    } catch (error) {
+        console.error("❌ Error sending email:", error);
+        return false;
     }
-};
+}
 
 module.exports = sendEmail;
