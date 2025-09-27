@@ -159,7 +159,6 @@ export default function AdminOrderPanel() {
           );
           const badge = getStatusStyle(order.status);
 
-          // Safely calculate item total
           const itemTotal = (item) => {
             const price = item.price ?? 0;
             const quantity = item.quantity ?? 0;

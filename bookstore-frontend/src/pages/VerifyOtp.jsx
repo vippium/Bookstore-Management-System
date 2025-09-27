@@ -28,7 +28,7 @@ export default function VerifyOtp() {
   }
 
   const handleChange = async (value, index) => {
-    if (!/^[0-9]?$/.test(value)) return; // only allow digits
+    if (!/^[0-9]?$/.test(value)) return;
 
     const newOtp = [...otp];
     newOtp[index] = value;
@@ -38,7 +38,6 @@ export default function VerifyOtp() {
       inputsRef.current[index + 1]?.focus();
     }
 
-    // Auto-submit if OTP is complete
     const otpValue = newOtp.join("");
     if (otpValue.length === 6 && newOtp.every((d) => d !== "")) {
       await handleVerify(otpValue);
@@ -91,7 +90,7 @@ export default function VerifyOtp() {
           }}
           className="space-y-6"
         >
-          {/* OTP Input Boxes */}
+          {/* OTP Input Design */}
           <div className="flex justify-center gap-2">
             {otp.map((digit, index) => (
               <input
@@ -108,7 +107,7 @@ export default function VerifyOtp() {
             ))}
           </div>
 
-          {/* Verify Button (backup if auto-submit fails) */}
+          {/* Verify Button */}
           <button
             type="submit"
             disabled={loading}

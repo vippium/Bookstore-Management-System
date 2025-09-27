@@ -293,7 +293,7 @@ export default function BookDetails () {
           User Reviews
         </h3>
 
-        {/* User's Star Rating and Review Input (Conditionally rendered) */}
+        {/* User's Star Rating and Review Input  */}
         {user && <StarRating bookId={book._id} onRated={fetchReviews} />}
 
         {reviews.length === 0 ? (

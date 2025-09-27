@@ -124,7 +124,7 @@ export default function StarRating ({ bookId, onRated, readOnly = false }) {
         </h4>
       )}
 
-      {/* Display stars for interaction or just average */}
+      {/* Display stars for Rating */}
       <div className={`flex gap-1 items-center ${!readOnly ? 'mb-3' : ''}`}>
         {[1, 2, 3, 4, 5].map(val => (
           <Star
@@ -185,7 +185,7 @@ export default function StarRating ({ bookId, onRated, readOnly = false }) {
         </div>
       )}
 
-      {/* Average Rating Summary for interactive component */}
+      {/* Average Rating Summary */}
       {!readOnly && avgRating && (
         <div className='text-sm text-gray-600 mt-4 pt-3 border-t border-gray-200'>
           Overall Average:{' '}

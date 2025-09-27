@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
 import api from "../services/axios";
-import { Pencil, Trash2, Loader, ChevronUp, ChevronDown, ChevronsUpDown, Undo2 } from "lucide-react";
+import {
+  Pencil,
+  Trash2,
+  Loader,
+  ChevronUp,
+  ChevronDown,
+  ChevronsUpDown,
+  Undo2,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import ConfirmModal from "./ConfirmModal";
-
 
 export default function BookManager() {
   const [books, setBooks] = useState([]);
@@ -17,7 +24,6 @@ export default function BookManager() {
   const [showModal, setShowModal] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
 
-
   useEffect(() => {
     api
       .get("/books")
@@ -27,53 +33,59 @@ export default function BookManager() {
   }, []);
 
   const handleDelete = async (bookId, bookTitle) => {
-    toast((t) => (
-      <div className="text-sm">
-        <p>Delete <strong>{bookTitle}</strong>?</p>
-        <div className="flex gap-3 mt-2">
-          <button
-            onClick={async () => {
-              toast.dismiss(t.id);
-              try {
-                const deleted = books.find((b) => b._id === bookId);
-                setBooks((prev) => prev.filter((b) => b._id !== bookId));
-                await api.delete(`/books/${bookId}`);
-                toast.success("Book deleted");
+    toast(
+      (t) => (
+        <div className="text-sm">
+          <p>
+            Delete <strong>{bookTitle}</strong>?
+          </p>
+          <div className="flex gap-3 mt-2">
+            <button
+              onClick={async () => {
+                toast.dismiss(t.id);
+                try {
+                  const deleted = books.find((b) => b._id === bookId);
+                  setBooks((prev) => prev.filter((b) => b._id !== bookId));
+                  await api.delete(`/books/${bookId}`);
+                  toast.success("Book deleted");
 
-                // Show undo for 5 seconds
-                toast((undoToast) => (
-                  <div className="text-sm">
-                    <span>Undo delete?</span>
-                    <button
-                      className="ml-3 text-blue-600 font-medium"
-                      onClick={() => {
-                        setBooks((prev) => [deleted, ...prev]);
-                        toast.dismiss(undoToast.id);
-                      }}
-                    >
-                      Undo
-                    </button>
-                  </div>
-                ), { duration: 5000 });
+                  toast(
+                    (undoToast) => (
+                      <div className="text-sm">
+                        <span>Undo delete?</span>
+                        <button
+                          className="ml-3 text-blue-600 font-medium"
+                          onClick={() => {
+                            setBooks((prev) => [deleted, ...prev]);
+                            toast.dismiss(undoToast.id);
+                          }}
+                        >
+                          Undo
+                        </button>
+                      </div>
+                    ),
+                    { duration: 5000 }
+                  );
+                } catch (err) {
+                  toast.error("Failed to delete");
+                }
+              }}
+              className="px-3 py-1 rounded-full bg-red-600 text-white text-xs hover:bg-red-700"
+            >
+              Confirm
+            </button>
 
-              } catch (err) {
-                toast.error("Failed to delete");
-              }
-            }}
-            className="px-3 py-1 rounded-full bg-red-600 text-white text-xs hover:bg-red-700"
-          >
-            Confirm
-          </button>
-
-          <button
-            onClick={() => toast.dismiss(t.id)}
-            className="px-3 py-1 rounded-full bg-gray-200 text-xs hover:bg-gray-300"
-          >
-            Cancel
-          </button>
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="px-3 py-1 rounded-full bg-gray-200 text-xs hover:bg-gray-300"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
-      </div>
-    ), { duration: 10000 });
+      ),
+      { duration: 10000 }
+    );
   };
 
   const cycleSort = (field) => {
@@ -104,14 +116,14 @@ export default function BookManager() {
         sortBy === "stock"
           ? a.stock
           : sortBy === "price"
-            ? a.price
-            : a[sortBy].toString().toLowerCase();
+          ? a.price
+          : a[sortBy].toString().toLowerCase();
       const bVal =
         sortBy === "stock"
           ? b.stock
           : sortBy === "price"
-            ? b.price
-            : b[sortBy].toString().toLowerCase();
+          ? b.price
+          : b[sortBy].toString().toLowerCase();
 
       if (aVal < bVal) return sortOrder === "asc" ? -1 : 1;
       if (aVal > bVal) return sortOrder === "asc" ? 1 : -1;
@@ -209,7 +221,9 @@ export default function BookManager() {
                 />
               </td>
               <td className="p-3 font-medium text-gray-800 max-w-[160px]">
-                <div className="line-clamp-2 break-words leading-snug">{book.title}</div>
+                <div className="line-clamp-2 break-words leading-snug">
+                  {book.title}
+                </div>
               </td>
 
               <td className="p-3 text-gray-700">{book.author}</td>
@@ -223,20 +237,20 @@ export default function BookManager() {
               <td className="p-3">
                 <span
                   className={`text-xs font-medium px-2 py-1 rounded-full
-    ${book.stock === 0
-                      ? "bg-red-100 text-red-600"
-                      : book.stock <= 5
-                        ? "bg-yellow-100 text-yellow-700"
-                        : "bg-green-100 text-green-700"
-                    }`}
+    ${
+      book.stock === 0
+        ? "bg-red-100 text-red-600"
+        : book.stock <= 5
+        ? "bg-yellow-100 text-yellow-700"
+        : "bg-green-100 text-green-700"
+    }`}
                 >
                   {book.stock === 0
                     ? "Out of stock"
                     : book.stock <= 5
-                      ? `${book.stock} (Low Stock)`
-                      : `${book.stock} in stock`}
+                    ? `${book.stock} (Low Stock)`
+                    : `${book.stock} in stock`}
                 </span>
-
               </td>
 
               <td className="p-3 text-blue-600 font-semibold">₹{book.price}</td>
@@ -268,7 +282,6 @@ export default function BookManager() {
                 >
                   <Trash2 size={16} />
                 </button>
-
               </td>
             </tr>
           ))}
@@ -290,29 +303,32 @@ export default function BookManager() {
             setLastDeleted(deleted);
 
             // Show Undo Toast
-            toast((t) => (
-              <div className="flex items-center gap-4 text-sm">
-                <span>
-                  Deleted <strong>{deleted.title}</strong>
-                </span>
-                <button
-                  className="text-blue-600 hover:underline font-medium"
-                  onClick={async () => {
-                    try {
-                      await api.post("/books", deleted);
-                      setBooks((prev) => [deleted, ...prev]);
-                      toast.success("Book restored");
-                    } catch {
-                      toast.error("Restore failed");
-                    }
-                    toast.dismiss(t.id);
-                    setLastDeleted(null);
-                  }}
-                >
-                  Undo
-                </button>
-              </div>
-            ), { duration: 5000 });
+            toast(
+              (t) => (
+                <div className="flex items-center gap-4 text-sm">
+                  <span>
+                    Deleted <strong>{deleted.title}</strong>
+                  </span>
+                  <button
+                    className="text-blue-600 hover:underline font-medium"
+                    onClick={async () => {
+                      try {
+                        await api.post("/books", deleted);
+                        setBooks((prev) => [deleted, ...prev]);
+                        toast.success("Book restored");
+                      } catch {
+                        toast.error("Restore failed");
+                      }
+                      toast.dismiss(t.id);
+                      setLastDeleted(null);
+                    }}
+                  >
+                    Undo
+                  </button>
+                </div>
+              ),
+              { duration: 5000 }
+            );
           } catch {
             toast.error("Failed to delete book");
           }
