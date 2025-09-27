@@ -20,7 +20,7 @@ const app = express();
 // ---------------------- CORS ----------------------
 const allowedOrigins = [
     "http://localhost:5173",
-    "https://bookstore-beige-psi-99.vercel.app",
+    "https://bookstore-vippium.vercel.app",
 ];
 
 app.use(
