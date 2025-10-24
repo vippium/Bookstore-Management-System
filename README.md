@@ -22,35 +22,120 @@
 ## 📁 Project Structure
 
 ```sh
-└── Bookstore-Management-System/
-    ├── bookstore-backend
-    │   ├── .env.example
-    │   ├── config
-    │   ├── controllers
-    │   ├── middleware
-    │   ├── models
-    │   ├── package-lock.json
-    │   ├── package.json
-    │   ├── routes
-    │   ├── server.js
-    │   └── utils
-    ├── bookstore-frontend
-    │   ├── .gitignore
-    │   ├── README.md
-    │   ├── eslint.config.js
-    │   ├── index.html
-    │   ├── package-lock.json
-    │   ├── package.json
-    │   ├── postcss.config.js
-    │   ├── public
-    │   ├── src
-    │   ├── tailwind.config.js
-    │   └── vite.config.js
-    ├── postman
-    │   ├── bookstore-api.postman_collection.json
-    ├── LICENSE
-    ├── README.md
-    └── package-lock.json
+Bookstore-Management-System/
+├── bookstore-backend/
+│   ├── .env.example
+│   ├── config/
+│   │   └── db.js
+│   ├── controllers/
+│   │   ├── analyticsController.js
+│   │   ├── authController.js
+│   │   ├── bookController.js
+│   │   ├── cartController.js
+│   │   ├── orderController.js
+│   │   ├── ratingController.js
+│   │   └── wishlistController.js
+│   ├── middleware/
+│   │   └── authMiddleware.js
+│   ├── models/
+│   │   ├── bookModel.js
+│   │   ├── cartModel.js
+│   │   ├── orderModel.js
+│   │   ├── ratingModel.js
+│   │   ├── userModel.js
+│   │   └── wishlistModel.js
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── routes/
+│   │   ├── analyticsRoutes.js
+│   │   ├── authRoutes.js
+│   │   ├── bookRoutes.js
+│   │   ├── cartRoutes.js
+│   │   ├── orderRoutes.js
+│   │   ├── ratingRoutes.js
+│   │   └── wishlistRoutes.js
+│   ├── server.js
+│   └── utils/
+│       ├── emailTemplates.js
+│       └── sendEmail.js
+├── bookstore-frontend/
+│   ├── .gitignore
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── postcss.config.js
+│   ├── public/
+│   │   ├── empty-box 1.png
+│   │   ├── empty-box.png
+│   │   ├── placeholder 1.jpeg
+│   │   └── placeholder.jpeg
+│   ├── README.md
+│   ├── src/
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── assets/
+│   │   │   ├── react 1.svg
+│   │   │   └── react.svg
+│   │   ├── components/
+│   │   │   ├── AdminOrderPanel.jsx
+│   │   │   ├── BookForm.jsx
+│   │   │   ├── BookManager.jsx
+│   │   │   ├── Breadcrumb.jsx
+│   │   │   ├── ConfirmModal.jsx
+│   │   │   ├── InvoiceCard.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── OrdersChart.jsx
+│   │   │   ├── ProtectedRoute.jsx
+│   │   │   ├── SalesChart.jsx
+│   │   │   ├── StarRating.jsx
+│   │   │   ├── toastUtils.js
+│   │   │   ├── TopGenresChart.jsx
+│   │   │   └── UserOrdersChart.jsx
+│   │   ├── context/
+│   │   │   ├── AuthContext.jsx
+│   │   │   ├── CartContext.jsx
+│   │   │   └── WishlistContext.jsx
+│   │   ├── index.css
+│   │   ├── main.jsx
+│   │   ├── pages/
+│   │   │   ├── AddBook.jsx
+│   │   │   ├── BookDetails.jsx
+│   │   │   ├── Cart.jsx
+│   │   │   ├── Checkout.jsx
+│   │   │   ├── Dashboard/
+│   │   │   │   ├── AdminDashboard.jsx
+│   │   │   │   ├── Dashboard.jsx
+│   │   │   │   ├── MyOrders.jsx
+│   │   │   │   ├── OrderSummary.jsx
+│   │   │   │   ├── Sidebar.jsx
+│   │   │   │   └── UserInfo.jsx
+│   │   │   ├── EditBook.jsx
+│   │   │   ├── Home.jsx
+│   │   │   ├── Login.jsx
+│   │   │   ├── OrderSuccess.jsx
+│   │   │   ├── Profile.jsx
+│   │   │   ├── Register.jsx
+│   │   │   ├── VerifyOtp.jsx
+│   │   │   └── Wishlist.jsx
+│   │   └── services/
+│   │       ├── authService.js
+│   │       ├── axios.js
+│   │       ├── cartApi.js
+│   │       ├── ratingApi.js
+│   │       ├── useAnalytics.js
+│   │       └── wishlistService.js
+│   ├── tailwind.config.js
+│   ├── vercel.json
+│   └── vite.config.js
+├── Instructions Guide.pdf
+├── LICENSE
+├── .gitignore
+├── package-lock.json
+├── postman/
+│   └── bookstore-api.postman_collection.json
+└── README.md
+
 ```
 
 ---
