@@ -170,44 +170,38 @@ npm run dev
 ```
 
 ---
-## 📌 Project Roadmap
 
-- ✅ Authentication (Login / Register)
-- ✅ Book management (CRUD)
-- ✅ Cart (guest + user)
-- ✅ Wishlist for Logged-In users.
-- ✅ Checkout + Email support.
-- ✅ Reviews & Ratings.
-- ✅ Admin panel (only for Admins).
-- ✅ Filtering, Pagination.
-- ✅ Full animations & polish.
-- ✅ Deployment
-- ✅ README & Documentation.
+## 📘 API Documentation (Swagger UI)
+
+The **Bookstore Management API** is fully documented with **Swagger UI**, providing an interactive and developer-friendly interface to explore all endpoints.
+
+### 🌐 Live API Docs
+- **Deployed URL**: https://bookstore-z02o.onrender.com/api-docs
+- **Local URL**: http://localhost:5000/api-docs
+
+### 📑 Includes:
+- Complete endpoint listing (Auth, Books, Orders, Cart, Wishlist, Ratings, Analytics).
+- JWT Authentication support.
+- Ready-made example requests and responses.
+- Developer-friendly schemas and models.
+- Built-in **“Try It Out”** testing directly from the browser.
 
 ---
 
 ## 🙌 Acknowledgments
 
-I've used these platforms and libraries in my project :
+I've used these platforms and libraries in my project:
 
-- **MongoDB Atlas** – Hosted NoSQL database for scalable and flexible data storage.
+- **MongoDB Atlas** – Hosted NoSQL database for scalable data storage.
 - **Render** – Cloud platform used for deploying the backend Node.js server.
 - **Vercel** – Optimized deployment platform for hosting the frontend React application.
-- **PDFKit** – Enables dynamic generation of PDF invoices after successful orders.
-- **TailwindCSS** – Utility-first CSS framework for building clean, responsive user interfaces.
-- **React Hot Toast** – Lightweight toast notifications for instant user feedback.
-- **Framer Motion** – Animations and transitions for smooth UI interactions.
-- **Lucide Icons** – Elegant and consistent icon set used across the app.
-- **JWT (JSON Web Token)** – Secure authentication and user session management.
+- **PDFKit** – Generates PDF invoices after successful orders.
+- **TailwindCSS** – Utility-first CSS framework for responsive UI.
+- **React Hot Toast** – Lightweight toast notifications.
+- **Framer Motion** – Smooth animations and transitions.
+- **Lucide Icons** – Elegant icon set for consistent visuals.
+- **JWT (JSON Web Token)** – Secure authentication and user sessions.
 - **Express.js** – Backend framework used for building RESTful APIs.
-
----
-
-## 📬 API Testing (Postman)
-
-You can find the Postman collection for testing all backend API endpoints in the [`postman/`](./postman) directory.
-
-> Import it in Postman for ready-to-use request sets.
 
 ---
 
