@@ -122,7 +122,7 @@ Bookstore-Management-System/
 │   │       ├── cartApi.js
 │   │       ├── ratingApi.js
 │   │       ├── useAnalytics.js
-│   │       └── wishlistService.js
+│   │       └──wishlistService.js
 │   ├── tailwind.config.js
 │   ├── vercel.json
 │   └── vite.config.js
@@ -211,4 +211,4 @@ I've used these platforms and libraries in my project:
 
 ## 🎗 License
 
-This project is protected under the [MIT](https://choosealicense.com/licenses/mit/) License. For more details, refer to the [LICENSE](https://github.com/vippium/Bookstore-Management-System/blob/3ad3566ba92e60721b69438d6138a164f9a6993d/LICENSE).
+This project is protected under the [MIT](https://choosealicense.com/licenses/mit/) License. For more details, refer to the [LICENSE](https://github.com/vippium/Bookstore-Management-System/blob/main/LICENSE).
