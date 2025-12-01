@@ -1,6 +1,5 @@
 ![Bookstore-Management-System](https://socialify.git.ci/vippium/Bookstore-Management-System/image?custom_language=Vite&description=1&font=Jost&language=1&name=1&pattern=Transparent&theme=Auto)
 
-
 ## 👾 Features
 
 - 🔐 **JWT Authentication** – Secure login, register, and logout flow with protected routes  
@@ -15,7 +14,6 @@
 - 🌈 **Polished UI/UX** – Smooth transitions, modals, animations, and responsive design  
 - 📬 **Email Notifications** – OTP and order confirmations via Nodemailer  
 - ☁️ **Deploy-Ready** – Hosted on **Render** (backend) & **Vercel** (frontend)  
-
 
 ---
 
@@ -176,8 +174,14 @@ npm run dev
 The **Bookstore Management API** is fully documented with **Swagger UI**, providing an interactive and developer-friendly interface to explore all endpoints.
 
 ### 🌐 Live API Docs
-- **Deployed URL**: https://bookstore-z02o.onrender.com/api-docs
-- **Local URL**: http://localhost:5000/api-docs
+- **Deployed URL**:
+```
+https://bookstore-z02o.onrender.com/api-docs
+```
+- **Local URL**:
+```
+http://localhost:5000/api-docs
+```
 
 ### 📑 Includes:
 - Complete endpoint listing (Auth, Books, Orders, Cart, Wishlist, Ratings, Analytics).
@@ -207,5 +211,4 @@ I've used these platforms and libraries in my project:
 
 ## 🎗 License
 
-This project is protected under the [MIT](https://choosealicense.com/licenses/mit/) License. For more details, refer to the [LICENSE](https://github.com/vippium/Bookstore-Management-System/blob/8354ac12755e2cc51595e89f86e562243e2fd562/LICENSE) file.
-
+This project is protected under the [MIT](https://choosealicense.com/licenses/mit/) License. For more details, refer to the [LICENSE](https://github.com/vippium/Bookstore-Management-System/blob/3ad3566ba92e60721b69438d6138a164f9a6993d/LICENSE).
